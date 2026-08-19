@@ -48,7 +48,7 @@ button:focus-visible, input:focus-visible, canvas:focus-visible {
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  padding-bottom: clamp(160px, 22svh, 300px);
+  padding-bottom: clamp(140px, 19svh, 260px);
   gap: 52px;
   text-align: center;
   position: relative;
