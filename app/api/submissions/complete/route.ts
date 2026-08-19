@@ -1,5 +1,5 @@
 import { ConfigurationError } from "@/lib/server/env";
-import { getKioskSession } from "@/lib/server/kiosk-session";
+import { getAuthorizedKioskSession } from "@/lib/server/kiosk-authorization";
 import { completeSubmission, SupabaseRequestError } from "@/lib/server/supabase";
 import { parseSubmissionMetadata } from "@/lib/server/validation";
 
@@ -9,7 +9,7 @@ function json(body: unknown, status = 200) {
 
 export async function POST(request: Request) {
   try {
-    const session = await getKioskSession(request);
+    const session = await getAuthorizedKioskSession(request);
     if (!session) {
       console.warn("[submissions/complete] rejected: kiosk session missing");
       return json({ error: "Kiosk session required" }, 401);

@@ -6,6 +6,10 @@ const root = new URL("../", import.meta.url);
 
 test("Supabase schema keeps consent metadata private and idempotent", async () => {
   const schema = await readFile(new URL("supabase/schema.sql", root), "utf8");
+  assert.match(schema, /create table if not exists public\.kiosk_devices/);
+  assert.match(schema, /alter table public\.kiosk_devices enable row level security/);
+  assert.match(schema, /revoke all on table public\.kiosk_devices from public, anon, authenticated, service_role/);
+  assert.match(schema, /grant select, insert, update on table public\.kiosk_devices to service_role/);
   assert.match(schema, /create table if not exists public\.consent_records/);
   assert.match(schema, /id uuid primary key/);
   assert.match(schema, /alter table public\.consent_records enable row level security/);
@@ -72,7 +76,9 @@ test("the kiosk setup is visible, required online, and reports synchronization f
   assert.match(setup, /Setup-Code anzeigen/);
   assert.match(setup, /Synchronisierung beendet:/);
   assert.match(setup, /Synchronisierung läuft:/);
-  assert.match(setup, /iPad freigeschaltet ✓/);
+  assert.match(setup, /iPad erneut freischalten/);
+  assert.match(setup, /nicht in Supabase registriert/);
+  assert.match(setup, /disabled=\{working \|\| !deviceId \|\| !setupCode\}/);
   assert.match(setup, /disabled=\{working \|\| !configured\}/);
   assert.match(setup, /Freischaltung konnte auf diesem iPad nicht gespeichert werden/);
   assert.match(page, /window\.location\.replace\("\/setup"\)/);
@@ -91,6 +97,10 @@ test("authorized iPads receive a renewable one-year kiosk session", async () => 
   assert.match(session, /SESSION_SECONDS = 60 \* 60 \* 24 \* 365/);
   assert.match(session, /HttpOnly; SameSite=Strict; Max-Age=\$\{SESSION_SECONDS\}/);
   assert.match(route, /createKioskCookie\(session\.deviceId, secure, expiresAt\)/);
+  assert.match(route, /verifyRegisteredKioskDevice\(session\.deviceId\)/);
+  assert.match(route, /registerKioskDevice\(body\.deviceId\)/);
+  assert.match(route, /"device-not-registered"/);
+  assert.match(route, /clearKioskCookie\(secure\)/);
   assert.match(route, /\{ "Set-Cookie": cookie \}/);
 });
 

@@ -34,6 +34,10 @@ interface ConsentRow {
   einwilligung_sha256: string;
 }
 
+interface KioskDeviceRow {
+  device_id: string;
+}
+
 function encodeObjectPath(path: string) {
   return path.split("/").map(encodeURIComponent).join("/");
 }
@@ -87,6 +91,53 @@ function rowToResult(row: ConsentRow): SubmissionResult {
     haftungSha256: row.haftung_sha256,
     einwilligungSha256: row.einwilligung_sha256,
   };
+}
+
+export async function registerKioskDevice(deviceId: string) {
+  const eventId = await getServerEventId();
+  const response = await requireSuccess(
+    await requestSupabase("/rest/v1/kiosk_devices?on_conflict=device_id&select=device_id", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Prefer: "resolution=merge-duplicates,return=representation",
+      },
+      body: JSON.stringify({
+        device_id: deviceId,
+        event_id: eventId,
+        active: true,
+        last_seen_at: new Date().toISOString(),
+      }),
+    }),
+    "Kiosk device registration",
+  );
+  const rows = (await response.json()) as KioskDeviceRow[];
+  if (rows[0]?.device_id !== deviceId) {
+    throw new SupabaseRequestError(502, "Kiosk device registration could not be verified");
+  }
+}
+
+export async function verifyRegisteredKioskDevice(deviceId: string) {
+  const eventId = await getServerEventId();
+  const query = new URLSearchParams({
+    device_id: `eq.${deviceId}`,
+    event_id: `eq.${eventId}`,
+    active: "eq.true",
+    select: "device_id",
+  });
+  const response = await requireSuccess(
+    await requestSupabase(`/rest/v1/kiosk_devices?${query.toString()}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Prefer: "return=representation",
+      },
+      body: JSON.stringify({ last_seen_at: new Date().toISOString() }),
+    }),
+    "Kiosk device verification",
+  );
+  const rows = (await response.json()) as KioskDeviceRow[];
+  return rows[0]?.device_id === deviceId;
 }
 
 function pathsFor(metadata: SubmissionMetadata) {

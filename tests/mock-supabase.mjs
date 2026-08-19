@@ -4,6 +4,7 @@ const port = Number(process.env.MOCK_SUPABASE_PORT || 54321);
 const expectedKey = process.env.MOCK_SUPABASE_KEY || "sb_secret_test";
 const records = new Map();
 const uploads = new Map();
+const devices = new Map();
 
 function postgresTimestamp(value) {
   return new Date(value).toISOString().replace("T", " ").replace("Z", "+00");
@@ -42,8 +43,15 @@ const server = http.createServer(async (request, response) => {
   if (url.pathname === "/__state") {
     return json(request, response, 200, {
       records: [...records.values()],
+      devices: [...devices.values()],
       uploads: [...uploads.entries()].map(([path, bytes]) => ({ path, size: bytes.length })),
     });
+  }
+
+  if (request.method === "DELETE" && url.pathname.startsWith("/__devices/")) {
+    devices.delete(decodeURIComponent(url.pathname.slice("/__devices/".length)));
+    response.writeHead(204);
+    return response.end();
   }
 
   const signedPrefix = "/storage/v1/object/upload/sign/";
@@ -82,6 +90,30 @@ const server = http.createServer(async (request, response) => {
     if (!bytes) return json(request, response, 404, { error: "not found" });
     response.writeHead(200, { "content-type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
     return response.end(bytes);
+  }
+
+  if (url.pathname === "/rest/v1/kiosk_devices" && request.method === "POST") {
+    const body = JSON.parse((await readBody(request)).toString("utf8"));
+    const existing = devices.get(body.device_id) || {};
+    const device = {
+      registered_at: new Date().toISOString(),
+      ...existing,
+      ...body,
+    };
+    devices.set(device.device_id, device);
+    return json(request, response, 201, [{ device_id: device.device_id }]);
+  }
+
+  if (url.pathname === "/rest/v1/kiosk_devices" && request.method === "PATCH") {
+    const id = (url.searchParams.get("device_id") || "").replace(/^eq\./, "");
+    const eventId = (url.searchParams.get("event_id") || "").replace(/^eq\./, "");
+    const device = devices.get(id);
+    if (!device || device.event_id !== eventId || device.active !== true) {
+      return json(request, response, 200, []);
+    }
+    const body = JSON.parse((await readBody(request)).toString("utf8"));
+    devices.set(id, { ...device, ...body });
+    return json(request, response, 200, [{ device_id: id }]);
   }
 
   if (url.pathname === "/rest/v1/consent_records" && request.method === "POST") {

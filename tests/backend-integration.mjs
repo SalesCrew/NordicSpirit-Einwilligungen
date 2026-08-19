@@ -17,8 +17,27 @@ const sessionResponse = await fetch(`${appUrl}/api/device/session`, {
   body: JSON.stringify({ deviceId, setupCode: "test-code" }),
 });
 assert.equal(sessionResponse.status, 200);
-const cookie = sessionResponse.headers.get("set-cookie")?.split(";", 1)[0];
+let cookie = sessionResponse.headers.get("set-cookie")?.split(";", 1)[0];
 assert.ok(cookie, "setup response must set a kiosk cookie");
+
+const registeredSession = await fetch(`${appUrl}/api/device/session`, { headers: { cookie } });
+assert.equal(registeredSession.status, 200);
+assert.equal((await registeredSession.json()).configured, true);
+
+await fetch(`${mockUrl}/__devices/${deviceId}`, { method: "DELETE" });
+const staleSession = await fetch(`${appUrl}/api/device/session`, { headers: { cookie } });
+assert.equal(staleSession.status, 200);
+assert.equal((await staleSession.json()).configured, false);
+assert.match(staleSession.headers.get("set-cookie") || "", /Max-Age=0/);
+
+const reactivationResponse = await fetch(`${appUrl}/api/device/session`, {
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body: JSON.stringify({ deviceId, setupCode: "test-code" }),
+});
+assert.equal(reactivationResponse.status, 200);
+cookie = reactivationResponse.headers.get("set-cookie")?.split(";", 1)[0];
+assert.ok(cookie, "reactivation response must set a kiosk cookie");
 
 function metadataFor(haftungBytes, einwilligungBytes, recordId = id, photoChoice = "yes") {
   return {
@@ -112,6 +131,9 @@ const noConsent = await post(
 assert.equal(noConsent.status, 400, await noConsent.clone().text());
 
 const state = await (await fetch(`${mockUrl}/__state`)).json();
+assert.equal(state.devices.length, 1);
+assert.equal(state.devices[0].device_id, deviceId);
+assert.equal(state.devices[0].active, true);
 assert.equal(state.records.length, 1);
 assert.ok(state.records.every((record) => record.photo_choice_haftung === "yes"));
 assert.ok(state.records.every((record) => record.privacy_notice_version === "2026-08-19.2"));

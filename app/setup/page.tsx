@@ -61,13 +61,19 @@ export default function SetupPage() {
     void getOrCreateDeviceId().then(async (id) => {
       setDeviceId(id);
       const response = await fetch("/api/device/session", { cache: "no-store" }).catch(() => null);
-      const session = response?.ok
-        ? await response.json() as { configured?: boolean }
+      const session = response
+        ? await response.json().catch(() => null) as { configured?: boolean; reason?: string; error?: string } | null
         : null;
       setConfigured(Boolean(session?.configured));
-      setMessage(session?.configured
-        ? "Dieses iPad ist freigeschaltet und bereit für die Synchronisierung."
-        : "Dieses iPad muss einmalig freigeschaltet werden.");
+      setMessage(
+        session?.configured
+          ? "Dieses iPad ist in Supabase registriert und bereit für die Synchronisierung."
+          : session?.reason === "device-not-registered"
+            ? "Diese Geräte-ID ist nicht in Supabase registriert. Bitte mit dem Setup-Code erneut freischalten."
+            : response && !response.ok
+              ? session?.error || "Der Gerätestatus konnte gerade nicht geprüft werden. Bitte erneut versuchen."
+              : "Dieses iPad muss einmalig freigeschaltet werden.",
+      );
       await Promise.all([
         refreshStatus(),
         prepareOfflineApp().then(setOffline).catch(() => setOffline({
@@ -166,9 +172,13 @@ export default function SetupPage() {
           <button
             className={`primary-button start-button ${configured ? "setup-unlocked-button" : ""}`}
             type="submit"
-            disabled={configured || working || !deviceId || !setupCode}
+            disabled={working || !deviceId || !setupCode}
           >
-            {configured ? "iPad freigeschaltet ✓" : working ? "Wird freigeschaltet …" : "iPad freischalten"}
+            {working
+              ? "Wird freigeschaltet …"
+              : configured
+                ? "iPad erneut freischalten"
+                : "iPad freischalten"}
           </button>
         </form>
         <div className="setup-queue" aria-label="Lokale Warteschlange">

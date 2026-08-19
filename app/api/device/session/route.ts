@@ -7,6 +7,11 @@ import {
   setupCodeMatches,
   validDeviceId,
 } from "@/lib/server/kiosk-session";
+import {
+  registerKioskDevice,
+  SupabaseRequestError,
+  verifyRegisteredKioskDevice,
+} from "@/lib/server/supabase";
 
 function json(body: unknown, status = 200, headers?: HeadersInit) {
   return Response.json(body, { status, headers: { "Cache-Control": "no-store", ...headers } });
@@ -17,6 +22,13 @@ export async function GET(request: Request) {
     const session = await getKioskSession(request);
     if (!session) return json({ configured: false });
     const secure = new URL(request.url).protocol === "https:";
+    if (!(await verifyRegisteredKioskDevice(session.deviceId))) {
+      return json(
+        { configured: false, reason: "device-not-registered" },
+        200,
+        { "Set-Cookie": clearKioskCookie(secure) },
+      );
+    }
     const expiresAt = kioskSessionExpiresAt();
     const cookie = await createKioskCookie(session.deviceId, secure, expiresAt);
     return json(
@@ -26,6 +38,9 @@ export async function GET(request: Request) {
     );
   } catch (error) {
     if (error instanceof ConfigurationError) return json({ configured: false }, 503);
+    if (error instanceof SupabaseRequestError) {
+      return json({ error: "Gerätestatus konnte nicht in Supabase geprüft werden" }, error.status);
+    }
     return json({ error: "Session check failed" }, 500);
   }
 }
@@ -41,6 +56,7 @@ export async function POST(request: Request) {
     ) {
       return json({ error: "Ungültiger Setup-Code oder Geräte-ID" }, 401);
     }
+    await registerKioskDevice(body.deviceId);
     const secure = new URL(request.url).protocol === "https:";
     const cookie = await createKioskCookie(body.deviceId, secure);
     return json(
@@ -50,6 +66,9 @@ export async function POST(request: Request) {
     );
   } catch (error) {
     if (error instanceof ConfigurationError) return json({ error: "Backend noch nicht konfiguriert" }, 503);
+    if (error instanceof SupabaseRequestError) {
+      return json({ error: "Geräteregistrierung in Supabase fehlgeschlagen" }, error.status);
+    }
     return json({ error: "Setup fehlgeschlagen" }, 400);
   }
 }

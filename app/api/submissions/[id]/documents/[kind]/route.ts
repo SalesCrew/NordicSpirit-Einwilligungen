@@ -1,5 +1,5 @@
 import { ConfigurationError } from "@/lib/server/env";
-import { getKioskSession } from "@/lib/server/kiosk-session";
+import { getAuthorizedKioskSession } from "@/lib/server/kiosk-authorization";
 import {
   type SubmissionDocumentKind,
   SupabaseRequestError,
@@ -21,7 +21,7 @@ export async function PUT(
   context: { params: Promise<{ id: string; kind: string }> },
 ) {
   try {
-    const session = await getKioskSession(request);
+    const session = await getAuthorizedKioskSession(request);
     if (!session) {
       console.warn("[submissions/documents] rejected: kiosk session missing");
       return json({ error: "Kiosk session required" }, 401);
