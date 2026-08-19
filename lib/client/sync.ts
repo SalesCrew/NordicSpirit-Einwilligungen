@@ -12,42 +12,83 @@ const DOCX_MIME = "application/vnd.openxmlformats-officedocument.wordprocessingm
 
 let queueSyncRunning = false;
 
+export type SyncFailureKind = "network" | "setup-required" | "remote";
+
+export class SyncError extends Error {
+  constructor(
+    message: string,
+    public readonly kind: SyncFailureKind,
+    public readonly status?: number,
+  ) {
+    super(message);
+    this.name = "SyncError";
+  }
+}
+
+export interface QueueSyncResult {
+  attempted: number;
+  synced: number;
+  failed: number;
+  lastError: string | null;
+}
+
 function safeErrorMessage(error: unknown) {
   if (error instanceof Error) return error.message;
   return "Upload fehlgeschlagen";
 }
 
 async function postJson<T>(path: string, body: SubmissionMetadata) {
-  const response = await fetch(path, {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify(body),
-    credentials: "same-origin",
-  });
+  let response: Response;
+  try {
+    response = await fetch(path, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(body),
+      credentials: "same-origin",
+    });
+  } catch {
+    throw new SyncError("Der Server ist derzeit nicht erreichbar", "network");
+  }
   if (!response.ok) {
     const result = await response.json().catch(() => ({ error: "Upload fehlgeschlagen" })) as { error?: string };
-    throw new Error(result.error || `Upload fehlgeschlagen (${response.status})`);
+    if (response.status === 401 || response.status === 403) {
+      throw new SyncError(
+        "Dieses iPad ist nicht freigeschaltet oder die Gerätesitzung ist abgelaufen",
+        "setup-required",
+        response.status,
+      );
+    }
+    throw new SyncError(result.error || `Upload fehlgeschlagen (${response.status})`, "remote", response.status);
   }
   return response.json() as Promise<T>;
 }
 
 async function uploadToSignedUrl(url: string, blob: Blob, apiKey: string) {
-  const response = await fetch(url, {
-    method: "PUT",
-    headers: {
-      apikey: apiKey,
-      "cache-control": "max-age=0",
-      "content-type": DOCX_MIME,
-      "x-upsert": "true",
-    },
-    body: await blob.arrayBuffer(),
-  });
+  let response: Response;
+  try {
+    response = await fetch(url, {
+      method: "PUT",
+      headers: {
+        apikey: apiKey,
+        "cache-control": "max-age=0",
+        "content-type": DOCX_MIME,
+        "x-upsert": "true",
+      },
+      body: await blob.arrayBuffer(),
+    });
+  } catch {
+    throw new SyncError("Supabase Storage ist derzeit nicht erreichbar", "network");
+  }
   if (!response.ok) {
     const result = await response.json().catch(() => ({ error: "Datei-Upload fehlgeschlagen" })) as {
       error?: string;
       message?: string;
     };
-    throw new Error(result.message || result.error || `Datei-Upload fehlgeschlagen (${response.status})`);
+    throw new SyncError(
+      result.message || result.error || `Datei-Upload fehlgeschlagen (${response.status})`,
+      "remote",
+      response.status,
+    );
   }
 }
 
@@ -97,17 +138,22 @@ export async function syncRecord(id: string) {
 }
 
 export async function syncPendingRecords(ignoreBackoff = false) {
-  if (queueSyncRunning) return;
+  if (queueSyncRunning) return null;
   queueSyncRunning = true;
+  const result: QueueSyncResult = { attempted: 0, synced: 0, failed: 0, lastError: null };
   try {
     const records = await getSyncCandidates(ignoreBackoff);
     for (const record of records) {
+      result.attempted += 1;
       try {
         await syncRecord(record.id);
-      } catch {
-        // The record remains local and carries its own backoff timestamp.
+        result.synced += 1;
+      } catch (error) {
+        result.failed += 1;
+        result.lastError = safeErrorMessage(error);
       }
     }
+    return result;
   } finally {
     queueSyncRunning = false;
   }

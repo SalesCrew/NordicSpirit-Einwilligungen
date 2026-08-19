@@ -20,10 +20,16 @@ import {
 import { generateConsentDocuments } from "@/lib/client/document-generator";
 import { dataUrlToBlob, getOrCreateDeviceId, saveLocalRecord } from "@/lib/client/offline-db";
 import { installSyncTriggers, prepareOfflineApp } from "@/lib/client/pwa";
-import { syncRecord } from "@/lib/client/sync";
+import { SyncError, syncRecord } from "@/lib/client/sync";
 
 type Step = "start" | "liability" | "consent" | "privacy" | "form" | "preview" | "success";
 type PhotoChoice = "" | "yes" | "no";
+type SaveDialogMode = "offline" | "setup-required" | "sync-error" | "storage-error";
+
+interface SaveDialogState {
+  mode: SaveDialogMode;
+  detail?: string;
+}
 
 function getToday() {
   const parts = new Intl.DateTimeFormat("de-AT", {
@@ -946,30 +952,52 @@ function ReviewScreen({
 
 function SaveStatusDialog({
   mode,
+  detail,
   retrying,
   onContinue,
   onRetry,
   onBack,
 }: {
-  mode: "offline" | "storage-error";
+  mode: SaveDialogMode;
+  detail?: string;
   retrying: boolean;
   onContinue: () => void;
   onRetry: () => void;
   onBack: () => void;
 }) {
   const offline = mode === "offline";
+  const setupRequired = mode === "setup-required";
+  const syncError = mode === "sync-error";
+  const locallySaved = offline || setupRequired || syncError;
   return (
     <div className="modal-backdrop save-status-backdrop" role="presentation">
       <section className="modal-card save-status-card" role="dialog" aria-modal="true" aria-labelledby="save-status-title">
-        <div className="modal-icon" aria-hidden="true">{offline ? "↻" : "!"}</div>
-        <h2 id="save-status-title">{offline ? "Keine Internetverbindung" : "Lokales Speichern fehlgeschlagen"}</h2>
+        <div className="modal-icon" aria-hidden="true">{locallySaved ? "↻" : "!"}</div>
+        <h2 id="save-status-title">
+          {offline
+            ? "Keine Internetverbindung"
+            : setupRequired
+              ? "iPad nicht freigeschaltet"
+              : syncError
+                ? "Synchronisierung fehlgeschlagen"
+                : "Lokales Speichern fehlgeschlagen"}
+        </h2>
         <p>
           {offline
             ? "Die Unterlagen wurden auf diesem iPad zwischengespeichert. Der Upload wird erneut versucht, sobald Supabase erreichbar ist."
-            : "Die Unterlagen konnten nicht sicher auf diesem iPad gespeichert werden. Bitte das Personal informieren und den Vorgang erneut versuchen."}
+            : setupRequired
+              ? "Die Unterlagen sind sicher lokal gespeichert. Öffne das Personal-Setup und schalte dieses iPad frei; danach werden ausstehende Datensätze automatisch synchronisiert."
+              : syncError
+                ? `Die Unterlagen sind sicher lokal gespeichert. Supabase meldet: ${detail || "Unbekannter Synchronisierungsfehler"}`
+                : "Die Unterlagen konnten nicht sicher auf diesem iPad gespeichert werden. Bitte das Personal informieren und den Vorgang erneut versuchen."}
         </p>
         <div className="save-status-actions">
-          {offline && (
+          {setupRequired && (
+            <button className="primary-button compact-button" type="button" onClick={() => window.location.assign("/setup")}>
+              Zum Personal-Setup
+            </button>
+          )}
+          {(offline || syncError) && (
             <button className="primary-button compact-button" type="button" onClick={onContinue}>
               Lokal speichern &amp; fortfahren
             </button>
@@ -997,12 +1025,38 @@ export default function Home() {
   const [privacyAcknowledgedAtClient, setPrivacyAcknowledgedAtClient] = useState("");
   const [signature, setSignature] = useState("");
   const [saving, setSaving] = useState(false);
-  const [saveDialog, setSaveDialog] = useState<"offline" | "storage-error" | null>(null);
+  const [saveDialog, setSaveDialog] = useState<SaveDialogState | null>(null);
   const [activeRecordId, setActiveRecordId] = useState<string | null>(null);
 
   useEffect(() => {
     void prepareOfflineApp().catch(() => undefined);
+    void fetch("/api/device/session", { cache: "no-store", credentials: "same-origin" })
+      .then(async (response) => {
+        if (!response.ok) return;
+        const session = await response.json() as { configured?: boolean };
+        if (!session.configured) window.location.replace("/setup");
+      })
+      .catch(() => undefined);
     return installSyncTriggers();
+  }, []);
+
+  const showSyncFailure = useCallback((error: unknown) => {
+    if (error instanceof SyncError) {
+      if (error.kind === "setup-required") {
+        setSaveDialog({ mode: "setup-required" });
+        return;
+      }
+      if (error.kind === "network") {
+        setSaveDialog({ mode: "offline" });
+        return;
+      }
+      setSaveDialog({ mode: "sync-error", detail: error.message });
+      return;
+    }
+    setSaveDialog({
+      mode: navigator.onLine ? "sync-error" : "offline",
+      detail: error instanceof Error ? error.message : undefined,
+    });
   }, []);
 
   const goTo = useCallback((nextStep: Step) => {
@@ -1035,8 +1089,8 @@ export default function Home() {
         try {
           await syncRecord(activeRecordId);
           goTo("success");
-        } catch {
-          setSaveDialog("offline");
+        } catch (error) {
+          showSyncFailure(error);
         }
         return;
       }
@@ -1094,7 +1148,7 @@ export default function Home() {
       try {
         await saveLocalRecord(record);
       } catch {
-        setSaveDialog("storage-error");
+        setSaveDialog({ mode: "storage-error" });
         return;
       }
 
@@ -1102,11 +1156,11 @@ export default function Home() {
       try {
         await syncRecord(id);
         goTo("success");
-      } catch {
-        setSaveDialog("offline");
+      } catch (error) {
+        showSyncFailure(error);
       }
     } catch {
-      setSaveDialog("storage-error");
+      setSaveDialog({ mode: "storage-error" });
     } finally {
       setSaving(false);
     }
@@ -1119,6 +1173,7 @@ export default function Home() {
     privacyAcknowledged,
     privacyAcknowledgedAtClient,
     saving,
+    showSyncFailure,
     signature,
     signedDate,
   ]);
@@ -1133,12 +1188,12 @@ export default function Home() {
       await syncRecord(activeRecordId);
       setSaveDialog(null);
       goTo("success");
-    } catch {
-      setSaveDialog("offline");
+    } catch (error) {
+      showSyncFailure(error);
     } finally {
       setSaving(false);
     }
-  }, [activeRecordId, finishSubmission, goTo, saving]);
+  }, [activeRecordId, finishSubmission, goTo, saving, showSyncFailure]);
 
   if (step === "start") {
     return (
@@ -1213,7 +1268,8 @@ export default function Home() {
         />
         {saveDialog && (
           <SaveStatusDialog
-            mode={saveDialog}
+            mode={saveDialog.mode}
+            detail={saveDialog.detail}
             retrying={saving}
             onContinue={() => {
               setSaveDialog(null);

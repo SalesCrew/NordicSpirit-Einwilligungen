@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { type FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
 
 import { getLastSuccessfulSync, getOrCreateDeviceId, getQueueCounts } from "@/lib/client/offline-db";
@@ -15,6 +15,7 @@ function formatStorage(bytes: number | null) {
 export default function SetupPage() {
   const [deviceId, setDeviceId] = useState("");
   const [setupCode, setSetupCode] = useState("");
+  const [showSetupCode, setShowSetupCode] = useState(false);
   const [message, setMessage] = useState("Gerätestatus wird geprüft …");
   const [working, setWorking] = useState(false);
   const [counts, setCounts] = useState({ pending: 0, uploading: 0, synced: 0, error: 0 });
@@ -25,6 +26,23 @@ export default function SetupPage() {
     const [nextCounts, nextLastSync] = await Promise.all([getQueueCounts(), getLastSuccessfulSync()]);
     setCounts(nextCounts);
     setLastSync(nextLastSync);
+    return nextCounts;
+  };
+
+  const syncQueue = async () => {
+    const result = await syncPendingRecords(true);
+    const nextCounts = await refreshStatus();
+    if (result?.failed) {
+      setMessage(`Synchronisierung fehlgeschlagen: ${result.lastError || "Unbekannter Fehler"}`);
+      return;
+    }
+    if (nextCounts.pending + nextCounts.uploading + nextCounts.error === 0) {
+      setMessage(result?.synced
+        ? `${result.synced} Datensatz/Datensätze erfolgreich mit Supabase synchronisiert.`
+        : "Dieses iPad ist bereit für die Synchronisierung.");
+      return;
+    }
+    setMessage("Die Synchronisierung läuft bereits. Bitte Status erneut prüfen.");
   };
 
   useEffect(() => {
@@ -63,8 +81,7 @@ export default function SetupPage() {
       if (!response.ok) throw new Error(body.error || "Freischaltung fehlgeschlagen");
       setSetupCode("");
       setMessage("Dieses iPad ist freigeschaltet. Ausstehende Datensätze werden jetzt synchronisiert.");
-      await syncPendingRecords(true);
-      await refreshStatus();
+      await syncQueue();
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Freischaltung fehlgeschlagen");
     } finally {
@@ -83,16 +100,40 @@ export default function SetupPage() {
             <span>Geräte-ID</span>
             <input value={deviceId} readOnly aria-readonly="true" />
           </label>
-          <label className="field">
-            <span>Setup-Code</span>
-            <input
-              type="password"
-              value={setupCode}
-              onChange={(event) => setSetupCode(event.target.value)}
-              autoComplete="off"
-              required
-            />
-          </label>
+          <div className="field">
+            <label htmlFor="setup-code">Setup-Code</label>
+            <span className="setup-code-control">
+              <input
+                id="setup-code"
+                type={showSetupCode ? "text" : "password"}
+                value={setupCode}
+                onChange={(event) => setSetupCode(event.target.value)}
+                autoComplete="off"
+                required
+              />
+              <button
+                className="setup-code-visibility"
+                type="button"
+                aria-label={showSetupCode ? "Setup-Code ausblenden" : "Setup-Code anzeigen"}
+                aria-pressed={showSetupCode}
+                onClick={() => setShowSetupCode((visible) => !visible)}
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  {showSetupCode ? (
+                    <>
+                      <path d="M3 3l18 18" />
+                      <path d="M10.6 10.7a2 2 0 0 0 2.7 2.7M9.9 4.3A10.7 10.7 0 0 1 12 4c5.5 0 9 5.5 9 5.5a15 15 0 0 1-2.1 2.6M6.6 6.7C4.3 8.2 3 10.5 3 10.5S6.5 16 12 16c1 0 1.9-.2 2.7-.5" />
+                    </>
+                  ) : (
+                    <>
+                      <path d="M3 12s3.5-5.5 9-5.5 9 5.5 9 5.5-3.5 5.5-9 5.5S3 12 3 12z" />
+                      <circle cx="12" cy="12" r="2.5" />
+                    </>
+                  )}
+                </svg>
+              </button>
+            </span>
+          </div>
           <button className="primary-button start-button" type="submit" disabled={working || !deviceId || !setupCode}>
             {working ? "Wird freigeschaltet …" : "iPad freischalten"}
           </button>
@@ -127,8 +168,8 @@ export default function SetupPage() {
           disabled={working}
           onClick={() => {
             setWorking(true);
-            void syncPendingRecords(true)
-              .then(refreshStatus)
+            void syncQueue()
+              .catch((error) => setMessage(error instanceof Error ? error.message : "Synchronisierung fehlgeschlagen"))
               .finally(() => setWorking(false));
           }}
         >

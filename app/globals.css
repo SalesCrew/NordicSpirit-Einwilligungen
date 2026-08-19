@@ -775,7 +775,7 @@ h1 {
 .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 14px; }
 .full-field { grid-column: 1 / -1; }
 .field { display: flex; flex-direction: column; gap: 7px; }
-.field > span { color: #39434a; font-size: 13px; font-weight: 690; }
+.field > span, .field > label { color: #39434a; font-size: 13px; font-weight: 690; }
 .field input {
   width: 100%;
   min-height: 54px;
@@ -1036,6 +1036,26 @@ h1 {
 .setup-card > p { margin: 0 0 28px; color: var(--muted); line-height: 1.5; }
 .setup-card form { display: grid; gap: 18px; }
 .setup-card .start-button { width: 100%; margin-top: 6px; }
+.field .setup-code-control { position: relative; display: block; }
+.field .setup-code-control input { padding-right: 58px; }
+.setup-code-visibility {
+  width: 46px;
+  height: 46px;
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #536069;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.setup-code-visibility:hover { background: #f0f2f2; color: var(--ink); }
+.setup-code-visibility:focus-visible { outline: 3px solid #19a3e3; outline-offset: 1px; }
+.setup-code-visibility svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .setup-queue {
   margin-top: 26px;
   display: grid;

@@ -36,8 +36,8 @@ test("the offline worker cannot activate with a partial or stale build shell", a
   const worker = await readFile(new URL("public/sw.js", root), "utf8");
   const client = await readFile(new URL("lib/client/pwa.ts", root), "utf8");
 
-  assert.match(worker, /frequency-consent-shell-v6/);
-  assert.match(client, /frequency-consent-shell-v6/);
+  assert.match(worker, /frequency-consent-shell-v7/);
+  assert.match(client, /frequency-consent-shell-v7/);
   assert.match(worker, /\/assets\/frequency-finish-background\.png/);
   assert.match(client, /\/assets\/frequency-finish-background\.png/);
   assert.match(worker, /BUILD_ASSET_PREFIX = "\/_next\/static\/"/);
@@ -60,6 +60,19 @@ test("the landing action activates directly from an iPad touch", async () => {
   assert.match(page, /event\.preventDefault\(\);\s*goTo\("liability"\);/);
   assert.match(styles, /@media \(any-pointer: coarse\)/);
   assert.match(styles, /\.start-button:hover span \{ transform: none; \}/);
+});
+
+test("the kiosk setup is visible, required online, and reports synchronization failures", async () => {
+  const page = await readFile(new URL("app/page.tsx", root), "utf8");
+  const setup = await readFile(new URL("app/setup/page.tsx", root), "utf8");
+  const sync = await readFile(new URL("lib/client/sync.ts", root), "utf8");
+
+  assert.match(setup, /type=\{showSetupCode \? "text" : "password"\}/);
+  assert.match(setup, /Setup-Code anzeigen/);
+  assert.match(setup, /Synchronisierung fehlgeschlagen:/);
+  assert.match(page, /window\.location\.replace\("\/setup"\)/);
+  assert.match(page, /mode: "setup-required"/);
+  assert.match(sync, /response\.status === 401 \|\| response\.status === 403/);
 });
 
 test("the application rejects submissions without mandatory photo consent", async () => {
