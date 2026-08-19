@@ -32,6 +32,24 @@ test("integrated submission endpoints and offline worker are present", async () 
   await Promise.all(paths.map((path) => readFile(new URL(path, root), "utf8")));
 });
 
+test("the offline worker cannot activate with a partial or stale build shell", async () => {
+  const worker = await readFile(new URL("public/sw.js", root), "utf8");
+  const client = await readFile(new URL("lib/client/pwa.ts", root), "utf8");
+
+  assert.match(worker, /frequency-consent-shell-v3/);
+  assert.match(client, /frequency-consent-shell-v3/);
+  assert.match(worker, /BUILD_ASSET_PREFIX = "\/_next\/static\/"/);
+  assert.match(worker, /url\.pathname\.startsWith\(BUILD_ASSET_PREFIX\)/);
+  assert.match(worker, /Promise\.all\(urls\.map\(\(url\) => cache\.add\(url\)\)\)/);
+  const installHandler = worker.slice(
+    worker.indexOf('self.addEventListener("install"'),
+    worker.indexOf('self.addEventListener("activate"'),
+  );
+  assert.doesNotMatch(installHandler, /cache\.add\(url\)\.catch\(\(\) => undefined\)/);
+  assert.match(client, /updateViaCache: "none"/);
+  assert.match(client, /registration\.update\(\)\.catch/);
+});
+
 test("the application rejects submissions without mandatory photo consent", async () => {
   const validation = await readFile(new URL("lib/server/validation.ts", root), "utf8");
   const page = await readFile(new URL("app/page.tsx", root), "utf8");

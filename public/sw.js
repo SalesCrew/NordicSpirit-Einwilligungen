@@ -1,4 +1,5 @@
-const CACHE_NAME = "frequency-consent-shell-v2";
+const CACHE_NAME = "frequency-consent-shell-v3";
+const BUILD_ASSET_PREFIX = "/_next/static/";
 const CORE_URLS = [
   "/",
   "/manifest.webmanifest",
@@ -23,7 +24,10 @@ self.addEventListener("install", (event) => {
       .filter((value) => value.startsWith("/"))
       .filter((value) => !value.startsWith("/api/"));
     const urls = [...new Set([...CORE_URLS.filter((value) => value !== "/"), ...shellAssets])];
-    await Promise.all(urls.map((url) => cache.add(url).catch(() => undefined)));
+    // Keep installation atomic. Activating a worker with only the HTML cached can
+    // leave a kiosk unstyled when that HTML references a hashed asset that was not
+    // cached successfully.
+    await Promise.all(urls.map((url) => cache.add(url)));
     await self.skipWaiting();
   })());
 });
@@ -55,13 +59,38 @@ self.addEventListener("fetch", (event) => {
 
   if (request.mode === "navigate") {
     event.respondWith(
-      fetch(request)
-        .then((response) => {
-          const copy = response.clone();
-          void caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
-          return response;
-        })
-        .catch(async () => (await caches.match(request)) || (await caches.match("/")) || Response.error()),
+      (async () => {
+        const cached = await caches.match(request);
+        try {
+          const response = await fetch(request);
+          if (response.ok) {
+            const cache = await caches.open(CACHE_NAME);
+            await cache.put(request, response.clone());
+          }
+          return response.ok || !cached ? response : cached;
+        } catch {
+          return cached || (await caches.match("/")) || Response.error();
+        }
+      })(),
+    );
+    return;
+  }
+
+  if (url.pathname.startsWith(BUILD_ASSET_PREFIX)) {
+    event.respondWith(
+      (async () => {
+        const cached = await caches.match(request);
+        try {
+          const response = await fetch(request);
+          if (response.ok) {
+            const cache = await caches.open(CACHE_NAME);
+            await cache.put(request, response.clone());
+          }
+          return response.ok || !cached ? response : cached;
+        } catch {
+          return cached || Response.error();
+        }
+      })(),
     );
     return;
   }
