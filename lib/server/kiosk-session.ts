@@ -1,7 +1,7 @@
 import { getKioskConfig } from "@/lib/server/env";
 
 const COOKIE_NAME = "frequency_kiosk";
-const SESSION_SECONDS = 60 * 60 * 24 * 30;
+const SESSION_SECONDS = 60 * 60 * 24 * 365;
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 interface KioskSession {
@@ -52,10 +52,18 @@ export async function setupCodeMatches(candidate: string) {
   return constantTimeEqual(candidate, (await getKioskConfig()).setupCode);
 }
 
-export async function createKioskCookie(deviceId: string, secure: boolean) {
+export function kioskSessionExpiresAt() {
+  return Date.now() + SESSION_SECONDS * 1000;
+}
+
+export async function createKioskCookie(
+  deviceId: string,
+  secure: boolean,
+  expiresAt = kioskSessionExpiresAt(),
+) {
   const payload: KioskSession = {
     deviceId,
-    expiresAt: Date.now() + SESSION_SECONDS * 1000,
+    expiresAt,
   };
   const encodedPayload = toBase64Url(new TextEncoder().encode(JSON.stringify(payload)));
   const signature = await sign(encodedPayload);

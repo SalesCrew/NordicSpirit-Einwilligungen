@@ -3,6 +3,7 @@ import {
   clearKioskCookie,
   createKioskCookie,
   getKioskSession,
+  kioskSessionExpiresAt,
   setupCodeMatches,
   validDeviceId,
 } from "@/lib/server/kiosk-session";
@@ -15,7 +16,14 @@ export async function GET(request: Request) {
   try {
     const session = await getKioskSession(request);
     if (!session) return json({ configured: false });
-    return json({ configured: true, deviceId: session.deviceId, expiresAt: session.expiresAt });
+    const secure = new URL(request.url).protocol === "https:";
+    const expiresAt = kioskSessionExpiresAt();
+    const cookie = await createKioskCookie(session.deviceId, secure, expiresAt);
+    return json(
+      { configured: true, deviceId: session.deviceId, expiresAt },
+      200,
+      { "Set-Cookie": cookie },
+    );
   } catch (error) {
     if (error instanceof ConfigurationError) return json({ configured: false }, 503);
     return json({ error: "Session check failed" }, 500);

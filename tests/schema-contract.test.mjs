@@ -84,6 +84,16 @@ test("the kiosk setup is visible, required online, and reports synchronization f
   assert.match(sync, /committed\.haftungSha256 === latest\.haftungSha256/);
 });
 
+test("authorized iPads receive a renewable one-year kiosk session", async () => {
+  const session = await readFile(new URL("lib/server/kiosk-session.ts", root), "utf8");
+  const route = await readFile(new URL("app/api/device/session/route.ts", root), "utf8");
+
+  assert.match(session, /SESSION_SECONDS = 60 \* 60 \* 24 \* 365/);
+  assert.match(session, /HttpOnly; SameSite=Strict; Max-Age=\$\{SESSION_SECONDS\}/);
+  assert.match(route, /createKioskCookie\(session\.deviceId, secure, expiresAt\)/);
+  assert.match(route, /\{ "Set-Cookie": cookie \}/);
+});
+
 test("iPad uploads use the same-origin server proxy instead of direct Storage requests", async () => {
   const sync = await readFile(new URL("lib/client/sync.ts", root), "utf8");
   const server = await readFile(new URL("lib/server/supabase.ts", root), "utf8");
