@@ -69,10 +69,13 @@ async function uploadToAppServer(url: string, blob: Blob) {
     response = await fetch(url, {
       method: "PUT",
       headers: {
-        "cache-control": "no-store",
         "content-type": DOCX_MIME,
       },
-      body: await blob.arrayBuffer(),
+      // Pass the IndexedDB-restored Blob straight to fetch. On iPadOS Safari,
+      // materializing that Blob with arrayBuffer() can fail before any request
+      // reaches the server even though the device is online.
+      body: blob,
+      cache: "no-store",
       credentials: "same-origin",
     });
   } catch {

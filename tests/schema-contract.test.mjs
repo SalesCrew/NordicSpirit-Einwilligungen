@@ -37,8 +37,8 @@ test("the offline worker cannot activate with a partial or stale build shell", a
   const worker = await readFile(new URL("public/sw.js", root), "utf8");
   const client = await readFile(new URL("lib/client/pwa.ts", root), "utf8");
 
-  assert.match(worker, /frequency-consent-shell-v11/);
-  assert.match(client, /frequency-consent-shell-v11/);
+  assert.match(worker, /frequency-consent-shell-v12/);
+  assert.match(client, /frequency-consent-shell-v12/);
   assert.match(worker, /\/assets\/frequency-finish-background\.png/);
   assert.match(client, /\/assets\/frequency-finish-background\.png/);
   assert.match(worker, /BUILD_ASSET_PREFIX = "\/_next\/static\/"/);
@@ -89,6 +89,8 @@ test("iPad uploads use the same-origin server proxy instead of direct Storage re
 
   assert.match(sync, /uploadToAppServer/);
   assert.match(sync, /credentials: "same-origin"/);
+  assert.match(sync, /body: blob/);
+  assert.doesNotMatch(sync, /body: await blob\.arrayBuffer\(\)/);
   assert.doesNotMatch(sync, /uploadApiKey|uploadToSignedUrl/);
   assert.match(server, /uploadSubmissionDocument/);
   assert.match(server, /method: "POST"/);
