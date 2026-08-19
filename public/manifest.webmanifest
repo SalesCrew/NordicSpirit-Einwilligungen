@@ -1,0 +1,20 @@
+{
+  "name": "Geh ma steil! – Digitale Einwilligungen",
+  "short_name": "Geh ma steil!",
+  "description": "Offline-fähige digitale Einwilligungen für das Frequency Festival 2026.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b8ecb",
+  "theme_color": "#0b8ecb",
+  "icons": [
+    {
+      "src": "/assets/nordic-spirit-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
+
