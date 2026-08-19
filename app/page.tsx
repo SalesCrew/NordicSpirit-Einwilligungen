@@ -1145,14 +1145,6 @@ export default function Home() {
       <main className="app-shell">
         <section className="start-screen" aria-labelledby="welcome-title">
           <h1 id="welcome-title" className="visually-hidden">Geh ma steil!</h1>
-          <Image
-            className="brand-logo"
-            src="/assets/nordic-spirit-logo.png"
-            alt="Nordic Spirit"
-            width={330}
-            height={330}
-            priority
-          />
           <button className="primary-button start-button" type="button" onClick={() => goTo("liability")}>
             Ich geh steil! <span aria-hidden="true">⟶</span>
           </button>

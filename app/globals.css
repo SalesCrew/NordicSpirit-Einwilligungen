@@ -38,36 +38,22 @@ button:focus-visible, input:focus-visible, canvas:focus-visible {
   padding: 32px;
   position: relative;
   overflow: hidden;
-}
-
-.app-shell::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.12), transparent 52%),
-    rgba(8, 16, 23, 0.05);
+  background: #087b9f url("/assets/frequency-finish-background.png") center / cover no-repeat;
 }
 
 .start-screen {
   width: min(100%, 580px);
-  min-height: min(820px, calc(100svh - 64px));
+  min-height: calc(100svh - 64px);
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
+  padding-bottom: clamp(160px, 22svh, 300px);
   gap: 52px;
   text-align: center;
   position: relative;
   z-index: 1;
   animation: enter 420ms cubic-bezier(.2, .7, .2, 1) both;
-}
-
-.brand-logo {
-  width: clamp(240px, 38vw, 330px);
-  height: auto;
-  filter: drop-shadow(0 15px 32px rgba(255,255,255,.18));
 }
 
 .visually-hidden {
@@ -1161,7 +1147,6 @@ h1 {
 @media (max-width: 720px) {
   .app-shell { padding: 22px; }
   .start-screen { min-height: calc(100svh - 44px); }
-  .brand-logo { width: 250px; }
 
   .flow-shell { padding: 90px 14px 24px; }
   .flow-header { min-height: 72px; padding: 10px 16px 9px; grid-template-columns: 94px 1fr; }
