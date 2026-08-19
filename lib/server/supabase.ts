@@ -126,10 +126,13 @@ async function downloadDocument(path: string) {
 }
 
 function assertExistingMatches(existing: ConsentRow, metadata: SubmissionMetadata) {
+  const existingPrivacyTimestamp = Date.parse(existing.privacy_acknowledged_at_client);
+  const submittedPrivacyTimestamp = Date.parse(metadata.privacyAcknowledgedAtClient);
   if (
     existing.device_id !== metadata.deviceId ||
     existing.privacy_notice_version !== metadata.privacyNoticeVersion ||
-    existing.privacy_acknowledged_at_client !== metadata.privacyAcknowledgedAtClient ||
+    !Number.isFinite(existingPrivacyTimestamp) ||
+    existingPrivacyTimestamp !== submittedPrivacyTimestamp ||
     existing.photo_choice_haftung !== metadata.photoChoiceHaftung ||
     existing.haftung_sha256 !== metadata.haftungSha256 ||
     existing.einwilligung_sha256 !== metadata.einwilligungSha256

@@ -36,8 +36,8 @@ test("the offline worker cannot activate with a partial or stale build shell", a
   const worker = await readFile(new URL("public/sw.js", root), "utf8");
   const client = await readFile(new URL("lib/client/pwa.ts", root), "utf8");
 
-  assert.match(worker, /frequency-consent-shell-v8/);
-  assert.match(client, /frequency-consent-shell-v8/);
+  assert.match(worker, /frequency-consent-shell-v9/);
+  assert.match(client, /frequency-consent-shell-v9/);
   assert.match(worker, /\/assets\/frequency-finish-background\.png/);
   assert.match(client, /\/assets\/frequency-finish-background\.png/);
   assert.match(worker, /BUILD_ASSET_PREFIX = "\/_next\/static\/"/);
@@ -76,6 +76,8 @@ test("the kiosk setup is visible, required online, and reports synchronization f
   assert.match(page, /window\.location\.replace\("\/setup"\)/);
   assert.match(page, /mode: "setup-required"/);
   assert.match(sync, /response\.status === 401 \|\| response\.status === 403/);
+  assert.match(sync, /findCommittedSubmission/);
+  assert.match(sync, /committed\.haftungSha256 === latest\.haftungSha256/);
 });
 
 test("the application rejects submissions without mandatory photo consent", async () => {

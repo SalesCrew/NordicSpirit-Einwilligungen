@@ -92,6 +92,31 @@ async function uploadToSignedUrl(url: string, blob: Blob, apiKey: string) {
   }
 }
 
+async function findCommittedSubmission(id: string) {
+  try {
+    const response = await fetch(`/api/submissions/${encodeURIComponent(id)}`, {
+      cache: "no-store",
+      credentials: "same-origin",
+    });
+    if (!response.ok) return null;
+    const result = await response.json() as Partial<SubmissionResult>;
+    if (
+      result.id !== id ||
+      result.status !== "synced" ||
+      typeof result.syncedAt !== "string" ||
+      typeof result.haftungPath !== "string" ||
+      typeof result.einwilligungPath !== "string" ||
+      typeof result.haftungSha256 !== "string" ||
+      typeof result.einwilligungSha256 !== "string"
+    ) {
+      return null;
+    }
+    return result as SubmissionResult;
+  } catch {
+    return null;
+  }
+}
+
 export async function syncRecord(id: string) {
   const record = await markUploading(id);
   if (!record) throw new Error("Lokaler Datensatz wurde nicht gefunden");
@@ -132,6 +157,17 @@ export async function syncRecord(id: string) {
     await markSynced(id, result);
     return result;
   } catch (error) {
+    const committed = await findCommittedSubmission(id);
+    const latest = await getLocalRecord(id);
+    if (
+      committed &&
+      latest &&
+      committed.haftungSha256 === latest.haftungSha256 &&
+      committed.einwilligungSha256 === latest.einwilligungSha256
+    ) {
+      await markSynced(id, committed);
+      return committed;
+    }
     await markSyncError(id, safeErrorMessage(error));
     throw error;
   }
