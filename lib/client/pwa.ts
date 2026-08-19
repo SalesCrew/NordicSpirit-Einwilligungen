@@ -1,12 +1,13 @@
 import { syncPendingRecords } from "@/lib/client/sync";
 
-const SHELL_CACHE_NAME = "frequency-consent-shell-v3";
+const SHELL_CACHE_NAME = "frequency-consent-shell-v4";
 
 const OFFLINE_REQUIRED_PATHS = [
   "/",
   "/manifest.webmanifest",
   "/assets/nordic-spirit-logo.png",
   "/assets/frequency-background.png",
+  "/assets/frequency-finish-background.png",
   "/documents/haftung/page-1.png",
   "/documents/haftung/page-2.png",
   "/documents/haftung/page-3.png",

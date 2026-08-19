@@ -36,8 +36,10 @@ test("the offline worker cannot activate with a partial or stale build shell", a
   const worker = await readFile(new URL("public/sw.js", root), "utf8");
   const client = await readFile(new URL("lib/client/pwa.ts", root), "utf8");
 
-  assert.match(worker, /frequency-consent-shell-v3/);
-  assert.match(client, /frequency-consent-shell-v3/);
+  assert.match(worker, /frequency-consent-shell-v4/);
+  assert.match(client, /frequency-consent-shell-v4/);
+  assert.match(worker, /\/assets\/frequency-finish-background\.png/);
+  assert.match(client, /\/assets\/frequency-finish-background\.png/);
   assert.match(worker, /BUILD_ASSET_PREFIX = "\/_next\/static\/"/);
   assert.match(worker, /url\.pathname\.startsWith\(BUILD_ASSET_PREFIX\)/);
   assert.match(worker, /Promise\.all\(urls\.map\(\(url\) => cache\.add\(url\)\)\)/);

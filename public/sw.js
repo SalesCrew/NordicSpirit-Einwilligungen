@@ -1,10 +1,11 @@
-const CACHE_NAME = "frequency-consent-shell-v3";
+const CACHE_NAME = "frequency-consent-shell-v4";
 const BUILD_ASSET_PREFIX = "/_next/static/";
 const CORE_URLS = [
   "/",
   "/manifest.webmanifest",
   "/assets/nordic-spirit-logo.png",
   "/assets/frequency-background.png",
+  "/assets/frequency-finish-background.png",
   "/documents/haftung/page-1.png",
   "/documents/haftung/page-2.png",
   "/documents/haftung/page-3.png",

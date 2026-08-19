@@ -1229,13 +1229,6 @@ export default function Home() {
 
   return (
     <button className="success-screen" type="button" onClick={reset}>
-      <Image
-        className="success-logo"
-        src="/assets/nordic-spirit-logo.png"
-        alt="Nordic Spirit"
-        width={220}
-        height={220}
-      />
       <span className="success-kicker">Geschafft!</span>
       <strong>Viel Spaß bei<br />Geh ma steil!</strong>
       <small>Tippe irgendwo, um zur Startseite zurückzukehren.</small>
