@@ -23,7 +23,6 @@ Alle erwarteten Werte stehen in `.env.example`.
 
 - `SUPABASE_URL`: Projekt-URL.
 - `SUPABASE_SECRET_KEY`: serverseitiger `sb_secret_...`-Schlüssel; niemals als öffentliche Variable setzen.
-- `SUPABASE_PUBLISHABLE_KEY`: veröffentlichbarer `sb_publishable_...`-Schlüssel für die direkten, signierten Datei-Uploads.
 - `SUPABASE_BUCKET`: standardmäßig `frequency-2026-consents`.
 - `EVENT_ID`: muss dem öffentlichen Event-Identifier entsprechen.
 - `KIOSK_SETUP_CODE`: langer, zufälliger Code für die einmalige Gerätefreischaltung.
@@ -45,11 +44,12 @@ Die Setup-Seite prüft außerdem die Offline-Bereitschaft, zeigt lokale Speicher
 | `GET` | `/api/device/session` | Prüft die aktuelle Kiosk-Gerätesitzung. |
 | `POST` | `/api/device/session` | Tauscht Setup-Code und lokale Geräte-UUID gegen ein signiertes HttpOnly-Cookie. |
 | `DELETE` | `/api/device/session` | Entfernt die Gerätesitzung. |
-| `POST` | `/api/submissions/prepare` | Validiert Metadaten und Gerätesitzung und erstellt zwei kurzlebige, objektspezifische Upload-URLs. |
+| `POST` | `/api/submissions/prepare` | Validiert Metadaten und Gerätesitzung und erstellt zwei gerätegebundene Upload-Endpunkte. |
+| `PUT` | `/api/submissions/:id/documents/:kind` | Nimmt je eine lokale DOCX-Datei entgegen und überträgt sie serverseitig in den privaten Supabase-Bucket. |
 | `POST` | `/api/submissions/complete` | Lädt beide privaten Dateien serverseitig zur Hashprüfung und schreibt danach idempotent den Metadatensatz. |
 | `GET` | `/api/submissions/:id` | Verifiziert den synchronisierten Status für das aktuelle Gerät. |
 
-Beide POST-Endpunkte erwarten JSON-Metadaten. Zwischen `prepare` und `complete` lädt der Browser die beiden DOCX-Dateien direkt über die kurzlebigen signierten URLs in den privaten Bucket. Der geheime Supabase-Schlüssel bleibt dabei ausschließlich auf dem Server. `complete` lädt die privaten Objekte serverseitig, vergleicht beide SHA-256-Hashwerte erneut, erzwingt die Gerätebindung und akzeptiert höchstens 12 MiB pro DOCX-Datei.
+Beide POST-Endpunkte erwarten JSON-Metadaten. Zwischen `prepare` und `complete` überträgt der Browser die beiden DOCX-Dateien an dieselbe Vercel-Origin; die Server-Route schreibt sie mit dem geheimen Supabase-Schlüssel in den privaten Bucket. Dadurch hängt die iPad-Synchronisierung nach einer Offline-Phase nicht von einem direkten Cross-Origin-Upload zu Supabase Storage ab. `complete` lädt die privaten Objekte serverseitig, vergleicht beide SHA-256-Hashwerte erneut, erzwingt die Gerätebindung und akzeptiert höchstens 12 MiB pro DOCX-Datei.
 
 Neue Einreichungen werden nur mit der ausdrücklichen Foto-/Videoauswahl `yes` akzeptiert. Bei `no` beendet die Oberfläche die Anmeldung vor der Dokumenterzeugung; auch ein direkt manipulierter API-Aufruf wird mit `400` abgewiesen und erzeugt weder Datensatz noch Upload-URLs.
 

@@ -69,6 +69,13 @@ const server = http.createServer(async (request, response) => {
   }
 
   const objectPrefix = "/storage/v1/object/";
+  if (request.method === "POST" && url.pathname.startsWith(objectPrefix)) {
+    const body = await readBody(request);
+    const objectPath = decodeURIComponent(url.pathname.slice(objectPrefix.length));
+    uploads.set(objectPath, body);
+    return json(request, response, 200, { Key: objectPath });
+  }
+
   if (request.method === "GET" && url.pathname.startsWith(objectPrefix)) {
     const objectPath = decodeURIComponent(url.pathname.slice(objectPrefix.length));
     const bytes = uploads.get(objectPath);

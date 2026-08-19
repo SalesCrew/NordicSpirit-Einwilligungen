@@ -3,8 +3,13 @@ import type {
   SubmissionMetadata,
   SubmissionResult,
 } from "@/lib/contracts";
-import { ConfigurationError, getSupabaseConfig } from "@/lib/server/env";
+import { ConfigurationError, getServerEventId, getSupabaseConfig } from "@/lib/server/env";
 import { sha256 } from "@/lib/server/validation";
+
+const DOCX_MIME = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+const MAX_DOCUMENT_SIZE = 12 * 1024 * 1024;
+
+export type SubmissionDocumentKind = "haftung" | "einwilligung";
 
 export class SupabaseRequestError extends Error {
   constructor(
@@ -92,26 +97,6 @@ function pathsFor(metadata: SubmissionMetadata) {
   };
 }
 
-async function createSignedUploadUrl(path: string) {
-  const { url, bucket } = await getSupabaseConfig();
-  const response = await requireSuccess(
-    await requestSupabase(`/storage/v1/object/upload/sign/${encodeURIComponent(bucket)}/${encodeObjectPath(path)}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-upsert": "true",
-      },
-      body: "{}",
-    }),
-    "Signed upload preparation",
-  );
-  const body = await response.json() as { url?: string };
-  if (!body.url) throw new SupabaseRequestError(502, "Supabase returned no signed upload URL");
-  if (/^https?:\/\//i.test(body.url)) return body.url;
-  if (body.url.startsWith("/storage/v1/")) return `${url}${body.url}`;
-  return `${url}/storage/v1/${body.url.replace(/^\//, "")}`;
-}
-
 async function downloadDocument(path: string) {
   const { bucket } = await getSupabaseConfig();
   const response = await requireSuccess(
@@ -119,7 +104,7 @@ async function downloadDocument(path: string) {
     "Uploaded document verification",
   );
   const document = await response.blob();
-  if (document.size === 0 || document.size > 12 * 1024 * 1024) {
+  if (document.size === 0 || document.size > MAX_DOCUMENT_SIZE) {
     throw new SupabaseRequestError(422, "Uploaded document size is invalid");
   }
   return document;
@@ -150,20 +135,44 @@ export async function prepareSubmission(
     return rowToResult(existing);
   }
   const { haftungPath, einwilligungPath } = pathsFor(metadata);
-  const { publishableKey } = await getSupabaseConfig();
-  const [haftungUploadUrl, einwilligungUploadUrl] = await Promise.all([
-    createSignedUploadUrl(haftungPath),
-    createSignedUploadUrl(einwilligungPath),
-  ]);
   return {
     status: "upload",
     id: metadata.id,
     haftungPath,
     einwilligungPath,
-    haftungUploadUrl,
-    einwilligungUploadUrl,
-    uploadApiKey: publishableKey,
+    haftungUploadUrl: `/api/submissions/${encodeURIComponent(metadata.id)}/documents/haftung`,
+    einwilligungUploadUrl: `/api/submissions/${encodeURIComponent(metadata.id)}/documents/einwilligung`,
   };
+}
+
+export async function uploadSubmissionDocument(
+  id: string,
+  deviceId: string,
+  kind: SubmissionDocumentKind,
+  document: Blob,
+) {
+  if (document.size === 0 || document.size > MAX_DOCUMENT_SIZE) {
+    throw new SupabaseRequestError(422, "Uploaded document size is invalid");
+  }
+  const eventId = await getServerEventId();
+  const filename = kind === "haftung"
+    ? "haftungsausschluss.docx"
+    : "foto-video-entscheidung.docx";
+  const path = `${eventId}/${deviceId}/${id}/${filename}`;
+  const { bucket } = await getSupabaseConfig();
+  await requireSuccess(
+    await requestSupabase(`/storage/v1/object/${encodeURIComponent(bucket)}/${encodeObjectPath(path)}`, {
+      method: "POST",
+      headers: {
+        "Cache-Control": "no-store",
+        "Content-Type": DOCX_MIME,
+        "x-upsert": "true",
+      },
+      body: await document.arrayBuffer(),
+    }),
+    "Document upload",
+  );
+  return path;
 }
 
 export async function completeSubmission(metadata: SubmissionMetadata): Promise<SubmissionResult> {

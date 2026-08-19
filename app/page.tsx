@@ -1101,6 +1101,16 @@ export default function Home() {
   if (step === "start") {
     return (
       <main className="app-shell">
+        <button
+          className="setup-hotspot"
+          type="button"
+          aria-label="Personal-Setup öffnen"
+          onTouchEnd={(event) => {
+            event.preventDefault();
+            window.location.replace("/setup");
+          }}
+          onClick={() => window.location.replace("/setup")}
+        />
         <section className="start-screen" aria-labelledby="welcome-title">
           <h1 id="welcome-title" className="visually-hidden">Geh ma steil!</h1>
           <button

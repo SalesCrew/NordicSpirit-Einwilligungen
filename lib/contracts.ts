@@ -69,7 +69,6 @@ export interface PreparedSubmission {
   einwilligungPath: string;
   haftungUploadUrl: string;
   einwilligungUploadUrl: string;
-  uploadApiKey: string;
 }
 
 export function toSubmissionMetadata(record: LocalConsentRecord): SubmissionMetadata {

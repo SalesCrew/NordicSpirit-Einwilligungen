@@ -59,18 +59,26 @@ async function submit(haftungBytes, einwilligungBytes, recordId = id, photoChoic
       headers: { "content-type": "application/json" },
     });
   }
+  assert.equal(prepared.haftungUploadUrl.startsWith("/api/submissions/"), true);
+  assert.equal(prepared.einwilligungUploadUrl.startsWith("/api/submissions/"), true);
+  assert.equal("uploadApiKey" in prepared, false);
   const uploadHeaders = {
-    apikey: prepared.uploadApiKey,
-    "cache-control": "max-age=0",
+    cookie,
+    "cache-control": "no-store",
     "content-type": mime,
-    "x-upsert": "true",
   };
-  const [haftungUpload, einwilligungUpload] = await Promise.all([
-    fetch(prepared.haftungUploadUrl, { method: "PUT", headers: uploadHeaders, body: haftungBytes }),
-    fetch(prepared.einwilligungUploadUrl, { method: "PUT", headers: uploadHeaders, body: einwilligungBytes }),
-  ]);
-  assert.equal(haftungUpload.status, 200, await haftungUpload.clone().text());
-  assert.equal(einwilligungUpload.status, 200, await einwilligungUpload.clone().text());
+  const haftungUpload = await fetch(new URL(prepared.haftungUploadUrl, appUrl), {
+    method: "PUT",
+    headers: uploadHeaders,
+    body: haftungBytes,
+  });
+  const einwilligungUpload = await fetch(new URL(prepared.einwilligungUploadUrl, appUrl), {
+    method: "PUT",
+    headers: uploadHeaders,
+    body: einwilligungBytes,
+  });
+  assert.equal(haftungUpload.status, 201, await haftungUpload.clone().text());
+  assert.equal(einwilligungUpload.status, 201, await einwilligungUpload.clone().text());
   return post("/api/submissions/complete", metadata);
 }
 

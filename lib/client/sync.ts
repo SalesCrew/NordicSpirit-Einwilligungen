@@ -63,21 +63,20 @@ async function postJson<T>(path: string, body: SubmissionMetadata) {
   return response.json() as Promise<T>;
 }
 
-async function uploadToSignedUrl(url: string, blob: Blob, apiKey: string) {
+async function uploadToAppServer(url: string, blob: Blob) {
   let response: Response;
   try {
     response = await fetch(url, {
       method: "PUT",
       headers: {
-        apikey: apiKey,
-        "cache-control": "max-age=0",
+        "cache-control": "no-store",
         "content-type": DOCX_MIME,
-        "x-upsert": "true",
       },
       body: await blob.arrayBuffer(),
+      credentials: "same-origin",
     });
   } catch {
-    throw new SyncError("Supabase Storage ist derzeit nicht erreichbar", "network");
+    throw new SyncError("Der Upload-Server ist derzeit nicht erreichbar", "network");
   }
   if (!response.ok) {
     const result = await response.json().catch(() => ({ error: "Datei-Upload fehlgeschlagen" })) as {
@@ -138,10 +137,8 @@ export async function syncRecord(id: string) {
     if (prepared.status === "synced") {
       result = prepared;
     } else {
-      await Promise.all([
-        uploadToSignedUrl(prepared.haftungUploadUrl, haftungDocx, prepared.uploadApiKey),
-        uploadToSignedUrl(prepared.einwilligungUploadUrl, einwilligungDocx, prepared.uploadApiKey),
-      ]);
+      await uploadToAppServer(prepared.haftungUploadUrl, haftungDocx);
+      await uploadToAppServer(prepared.einwilligungUploadUrl, einwilligungDocx);
       result = await postJson<SubmissionResult>("/api/submissions/complete", metadata);
     }
 

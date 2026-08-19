@@ -1,7 +1,6 @@
 "use client";
 
 import { type FormEvent, useEffect, useState } from "react";
-import Link from "next/link";
 
 import { getLastSuccessfulSync, getOrCreateDeviceId, getQueueCounts } from "@/lib/client/offline-db";
 import { type OfflinePreparation, prepareOfflineApp } from "@/lib/client/pwa";
@@ -197,7 +196,17 @@ export default function SetupPage() {
         >
           {configured ? "Jetzt synchronisieren" : "Zuerst iPad freischalten"}
         </button>
-        <Link href="/">Zur App</Link>
+        <button
+          className="setup-app-link"
+          type="button"
+          onTouchEnd={(event) => {
+            event.preventDefault();
+            window.location.replace("/");
+          }}
+          onClick={() => window.location.replace("/")}
+        >
+          Zur App
+        </button>
       </section>
     </main>
   );

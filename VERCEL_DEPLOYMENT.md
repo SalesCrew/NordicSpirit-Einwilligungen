@@ -22,12 +22,11 @@ Add these variables in **Project → Settings → Environment Variables**.
 | `EVENT_ID` | `frequency-2026` | Server-only configuration |
 | `SUPABASE_URL` | `https://muqirsxlsfwslovdeawa.supabase.co` | Server-only configuration |
 | `SUPABASE_SECRET_KEY` | Copy the active `sb_secret_...` value from Supabase **Project Settings → API Keys → Secret keys** | **Sensitive/server-only** |
-| `SUPABASE_PUBLISHABLE_KEY` | `sb_publishable_8y3nGdCDqvWVVUlZ3TD0jg_77tsqlWe` | Publishable; returned only for signed uploads |
 | `SUPABASE_BUCKET` | `frequency-2026-consents` | Server-only configuration |
 | `KIOSK_SETUP_CODE` | A new long random code used once at `/setup` on each authorized iPad | **Sensitive/server-only** |
 | `KIOSK_SESSION_SECRET` | A new random value containing at least 32 random bytes | **Sensitive/server-only** |
 
-Set the five `NEXT_PUBLIC_*` variables for both Preview and Production so previews render the correct document versions. Keep the three sensitive values scoped to Production. If a preview needs a real upload test, scope those secrets only to the specific protected acceptance branch rather than every preview branch.
+Set the five `NEXT_PUBLIC_*` variables for both Preview and Production so previews render the correct document versions. Keep the three sensitive values scoped to Production. If a preview needs a real upload test, scope those secrets only to the specific protected acceptance branch rather than every preview branch. `SUPABASE_PUBLISHABLE_KEY` is no longer required because document uploads are proxied through the authenticated server route.
 
 Generate suitable secrets locally in PowerShell without committing them:
 

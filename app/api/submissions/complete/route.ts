@@ -23,7 +23,10 @@ export async function POST(request: Request) {
     console.info("[submissions/complete] synchronized");
     return json(result, 201);
   } catch (error) {
-    if (error instanceof ConfigurationError) return json({ error: "Backend not configured" }, 503);
+    if (error instanceof ConfigurationError) {
+      console.error("[submissions/complete] configuration failed", { message: error.message });
+      return json({ error: "Backend not configured" }, 503);
+    }
     if (error instanceof SupabaseRequestError) {
       console.error("[submissions/complete] Supabase failed", { status: error.status, message: error.message });
       return json({ error: error.message }, error.status);

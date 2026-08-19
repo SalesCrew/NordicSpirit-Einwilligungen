@@ -1,6 +1,6 @@
 import { syncPendingRecords } from "@/lib/client/sync";
 
-const SHELL_CACHE_NAME = "frequency-consent-shell-v10";
+const SHELL_CACHE_NAME = "frequency-consent-shell-v11";
 
 const OFFLINE_REQUIRED_PATHS = [
   "/",
