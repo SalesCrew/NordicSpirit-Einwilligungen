@@ -1,13 +1,15 @@
 # Datenschutzkonzept „Geh ma steil!“ – Frequency Festival 2026
 
-Stand: 18. August 2026  
+Stand: 19. August 2026
 Arbeitsfassung für die technische Umsetzung; finale Freigabe durch österreichische Datenschutz-/Veranstaltungsrechtsberatung vor dem Produktivstart erforderlich.
 
 ## Kurzfazit
 
-Die digitale Teilnahme kann datenschutzkonform umgesetzt werden, wenn die Information vor der Dateneingabe bereitgestellt, die Foto-/Videoeinwilligung freiwillig gestaltet, die Nachweise nur einem eng berechtigten Personenkreis zugänglich gemacht und nach einem dokumentierten Löschkonzept entfernt werden.
+Die aktuelle Produktentscheidung lautet: An „Geh ma steil!“ kann nur teilnehmen, wer der im Einwilligungsdokument beschriebenen Foto-/Videoaufnahme und -nutzung ausdrücklich mit „Ja“ zustimmt. Die App setzt diese Voraussetzung transparent um. Bei „Nein“ wird die Anmeldung beendet und weder ein Teilnehmerdatensatz noch ein Nicht-Einwilligungsdokument gespeichert.
 
-Die bisherige Regel „Nein zu Foto/Video = keine Teilnahme“ sollte nicht verwendet werden. Nach der aktuellen Einwilligungsleitlinie des Europäischen Datenschutzausschusses ist eine Einwilligung nicht freiwillig, wenn eine Ablehnung einen Nachteil auslöst oder eine für die Leistung nicht erforderliche Verarbeitung zur Bedingung gemacht wird. Die sportliche Aktivität muss daher auch mit „Nein“ möglich bleiben. Bei „Nein“ wird kein Foto-/Video-Einwilligungsdokument erzeugt, sondern ein eindeutiger Nicht-Einwilligungsnachweis.
+**Launch-Blocker – Freiwilligkeit und Kopplungsverbot:** Diese Produktentscheidung kann nicht allein durch eine bessere Formulierung datenschutzkonform gemacht werden. Nach Art. 7 Abs. 4 DSGVO und der aktuellen Einwilligungsleitlinie des Europäischen Datenschutzausschusses ist besonders zu prüfen, ob die Teilnahme von einer Einwilligung in Verarbeitungen abhängig gemacht wird, die für die Leistung nicht erforderlich sind. Führt die Ablehnung zum Ausschluss, besteht ein erhebliches Risiko, dass die Einwilligung nicht als freiwillig gilt. GWS und JTI müssen deshalb vor dem Live-Einsatz schriftlich und für jeden Aufnahme-, Veröffentlichungs- und Werbezweck belegen lassen, warum dieser objektiv für das konkrete Aktivitätskonzept erforderlich ist und ob eine weniger eingriffsintensive Gestaltung möglich ist. Ein bloßes kommerzielles Interesse oder die interne Bezeichnung als „Grundvoraussetzung“ genügt dafür nicht. Kann die Erforderlichkeit nicht belastbar begründet werden, muss „Nein“ wieder ein gültiger Teilnahmeweg sein.
+
+**Launch-Blocker – widerspruchsfreie Dokumente:** Die vorhandenen Original-Unterlagen bezeichnen die Foto-/Videoeinwilligung als freiwillig beziehungsweise optional. Das ist mit einem technisch erzwungenen „Ja“ nicht vereinbar. Vor dem Live-Einsatz müssen rechtlich freigegebene Masterdokumente, App-Text und tatsächlicher Ablauf dieselbe Regel abbilden. Bis dahin ist die jetzige Umsetzung nur eine technische Arbeitsfassung.
 
 Die Bestätigung der Datenschutzinformation ist kein eigener Erlaubnistatbestand. Sie dient nur als Nachweis, dass die Information gemäß Art. 13 DSGVO rechtzeitig bereitgestellt wurde.
 
@@ -29,21 +31,21 @@ GWS und JTI entscheiden gemeinsam über Zweck und Mittel der digitalen Nachweisf
 | Anmeldung, Altersprüfung, Teilnahmeabwicklung, Übernahme der Angaben in den Haftungsausschluss | Art. 6 Abs. 1 lit. b DSGVO | Erforderlich für die Durchführung der von der Person gewünschten Teilnahme. |
 | Nachweis von Unterzeichnung, Dokumentversion, Zeitpunkt, Integrität und Geltendmachung/Abwehr von Ansprüchen | Art. 6 Abs. 1 lit. f DSGVO | Berechtigtes Interesse an beweissicherer Dokumentation und Rechtsverteidigung. |
 | Technischer Schutz, Fehleranalyse und Missbrauchsabwehr | Art. 6 Abs. 1 lit. f DSGVO | Berechtigtes Interesse an einem sicheren und zuverlässigen Kiosksystem. |
-| Identifizierbare Foto-/Videoaufnahme und die konkret beschriebenen Veröffentlichungen | Art. 6 Abs. 1 lit. a DSGVO | Freiwillige, gesonderte und jederzeit für die Zukunft widerrufbare Einwilligung. |
+| Identifizierbare Foto-/Videoaufnahme und die konkret beschriebenen Veröffentlichungen | Art. 6 Abs. 1 lit. a DSGVO | Nur bei wirksamer, informierter und freiwilliger Einwilligung. Die derzeitige Teilnahme-Kopplung erzeugt ein Art.-7-Abs.-4-Risiko und bedarf vorab einer schriftlichen Erforderlichkeitsprüfung. |
 | Erfüllung einer konkreten gesetzlichen Pflicht oder behördlichen/gerichtlichen Anordnung | Art. 6 Abs. 1 lit. c DSGVO | Nur soweit im Einzelfall tatsächlich eine bestimmte Pflicht besteht. |
 
-Die Foto-/Videoeinwilligung darf nicht mit der Teilnahmebestätigung gebündelt, nicht vorangekreuzt und nicht durch eine Datenschutz-Lesebestätigung ersetzt werden. Aufnahme und Veröffentlichung sind getrennt rechtlich zu beurteilen; eine zulässige Aufnahme erlaubt nicht automatisch jede Veröffentlichung.
+Die Foto-/Videoeinwilligung wird nicht vorangekreuzt und nicht durch eine Datenschutz-Lesebestätigung ersetzt; ein aktives „Ja“ ist technisch erforderlich. Die Kopplung an die Teilnahme ist nur dann vertretbar, wenn die oben genannte Erforderlichkeitsprüfung positiv ausfällt. Aufnahme, Veröffentlichung und einzelne kommerzielle Nutzungszwecke sind getrennt rechtlich zu beurteilen; eine zulässige Aufnahme erlaubt nicht automatisch jede Veröffentlichung. Art. 6 Abs. 1 lit. b DSGVO kann die im vorliegenden Dokument breit beschriebenen Werbe- und Weitergaberechte nicht ohne gesonderte Prüfung ersetzen.
 
 ## Verarbeitete Daten
 
 - Vor- und Nachname
 - Geburtsdatum und daraus abgeleitete Volljährigkeitsprüfung
 - Unterzeichnungsdatum und Unterschriftsbild
-- Auswahl „Ja“ oder „Nein“ zur Foto-/Videoeinwilligung
+- ausdrückliche Auswahl „Ja“ zur Foto-/Videoeinwilligung; bei „Nein“ wird die Anmeldung abgebrochen und keine Auswahl gespeichert
 - Bestätigungen, dass die Dokumente und die Datenschutzinformation bereitgestellt und gelesen wurden
 - Versionen von Haftungsausschluss, Foto-/Videoentscheidung, Datenschutzinformation und App
 - technische Nachweisdaten: zufällige Datensatz- und Gerätekennung, Erfassungs-/Synchronisationszeit, Dateipfade, Größen und SHA-256-Prüfwerte
-- bei freiwilligem „Ja“: die von JTI oder beauftragten Agenturen erstellten Foto-/Videoaufnahmen; diese Aufnahmen liegen nicht zwingend in dieser App
+- bei erteiltem „Ja“: die von JTI oder beauftragten Agenturen erstellten Foto-/Videoaufnahmen; diese Aufnahmen liegen nicht zwingend in dieser App
 
 Die Rohsignatur ist bei diesem Einsatz nicht automatisch ein besonderes biometrisches Datum. Das würde sich ändern, wenn sie mit besonderen technischen Verfahren zur eindeutigen Identifizierung ausgewertet würde; eine solche Auswertung ist nicht vorgesehen.
 
@@ -72,7 +74,7 @@ Ein Legal Hold darf nicht pauschal für alle Besucher:innen gelten. Er muss Anla
 
 ### Datenschutzinformation zur digitalen Teilnahme und Nachweisführung
 
-**Version 19.08.2026**
+**Version 19.08.2026.2**
 
 #### 1. Wer ist verantwortlich?
 
@@ -86,7 +88,7 @@ Wir verarbeiten deinen Vor- und Nachnamen, dein Geburtsdatum, das Datum deiner T
 
 Wir verwenden deine Angaben, um deine Volljährigkeit zu prüfen, deine Teilnahme abzuwickeln und die unterzeichneten Unterlagen zu erstellen (Art. 6 Abs. 1 lit. b DSGVO). Dokumentversion, Auswahl, Unterzeichnung, Integrität und Übermittlung werden gespeichert, damit GWS und JTI die ordnungsgemäße Abwicklung belegen, Ansprüche geltend machen oder abwehren und das System schützen können (Art. 6 Abs. 1 lit. f DSGVO). Unser berechtigtes Interesse ist eine beweissichere, sichere und nachvollziehbare Veranstaltungsabwicklung.
 
-Die Aufnahme und Nutzung erkennbarer Foto-/Videoaufnahmen erfolgt nur, wenn du gesondert „Ja“ auswählst (Art. 6 Abs. 1 lit. a DSGVO). Ein „Nein“ verhindert deine Teilnahme an der Aktivität nicht. Du kannst eine erteilte Einwilligung jederzeit mit Wirkung für die Zukunft über konsumentenservice@jti.com widerrufen. Die Rechtmäßigkeit der Verarbeitung bis zum Widerruf bleibt unberührt.
+Die Aufnahme und Nutzung erkennbarer Foto-/Videoaufnahmen erfolgt nur, wenn du gesondert „Ja“ auswählst (Art. 6 Abs. 1 lit. a DSGVO). Die Aktivität ist als Foto-/Video-Promotion konzipiert; die Einwilligung in die im gesonderten Dokument beschriebenen Aufnahmen und Nutzungen ist daher Teilnahmevoraussetzung. Wenn du „Nein“ auswählst, kann die Anmeldung nicht abgeschlossen werden. Deine Auswahl wird dann nicht als Teilnahme gespeichert. Du kannst eine erteilte Einwilligung jederzeit mit Wirkung für die Zukunft über konsumentenservice@jti.com widerrufen. Die Rechtmäßigkeit der Verarbeitung bis zum Widerruf bleibt unberührt.
 
 #### 4. Wer erhält die Daten?
 
@@ -108,7 +110,7 @@ Du kannst dich an GWS oder JTI wenden. Außerdem hast du das Recht auf Beschwerd
 
 #### 7. Musst du die Daten angeben?
 
-Name, Geburtsdatum, Datum, Unterschrift und die Bestätigung der Teilnahmebedingungen sind für die Teilnahme erforderlich. Ohne diese Angaben kann die Anmeldung nicht abgeschlossen werden. Die Foto-/Videoeinwilligung ist freiwillig; ein „Nein“ hat keine Auswirkung auf die Teilnahme. Es findet keine ausschließlich automatisierte Entscheidung und kein Profiling statt.
+Name, Geburtsdatum, Datum, Unterschrift, die Bestätigung der Teilnahmebedingungen und die ausdrückliche Foto-/Videoeinwilligung sind für die Teilnahme erforderlich. Ohne diese Angaben beziehungsweise bei Auswahl von „Nein“ kann die Anmeldung nicht abgeschlossen werden. Es findet keine ausschließlich automatisierte Entscheidung und kein Profiling statt.
 
 #### 8. Lokale Technik auf dem iPad
 
@@ -118,30 +120,35 @@ Die App nutzt ausschließlich technisch erforderliche lokale Speichermechanismen
 
 Pflichtbestätigung nach dem Lesen:
 
-> Ich bestätige, dass mir die Datenschutzinformation zur digitalen Teilnahme und Nachweisführung (Version 19.08.2026) vor Eingabe meiner Daten bereitgestellt wurde und dass ich sie gelesen habe.
+> Ich bestätige, dass mir die Datenschutzinformation zur digitalen Teilnahme und Nachweisführung (Version 19.08.2026.2) vor Eingabe meiner Daten bereitgestellt wurde und dass ich sie gelesen habe.
 
 Kurze Darstellung in der Eingabemaske:
 
 > **Ich habe die Datenschutzinformation gelesen.**  
-> Version 19.08.2026 · Datenschutzinformation erneut öffnen
+> Version 19.08.2026.2 · Datenschutzinformation erneut öffnen
 
 Bei Fotoauswahl „Nein“:
 
-> **Keine Foto-/Videoeinwilligung**  
-> Du kannst trotzdem an „Geh ma steil!“ teilnehmen. Wir erstellen lediglich einen Nachweis deiner Auswahl, damit keine erkennbare kommerzielle Foto-/Videoverwendung auf Grundlage dieser Einwilligung erfolgt.
+> **Teilnahmevoraussetzung Foto & Video**
+>
+> Für die Teilnahme an „Geh ma steil!“ ist die Einwilligung in die im Dokument beschriebenen Foto- und Videoaufnahmen und deren Nutzung erforderlich. Mit „Nein“ kann die Anmeldung nicht abgeschlossen werden. Deine Auswahl wird nicht als Teilnahme gespeichert.
+>
+> Aktionen: **Auswahl ändern** oder **Zur Startseite**
 
 ## Technische und organisatorische Mindestmaßnahmen vor dem Start
 
-1. Art.-26-Vereinbarung zwischen GWS und JTI unterschreiben und einen Kontaktpunkt festlegen.
-2. Art.-28-Verträge mit Supabase und Vercel sowie allen weiteren Auftragsverarbeitern abschließen; sicherstellen, dass der Vercel-Plan vom DPA erfasst ist; Unterauftragsverarbeiter und Drittlandgarantien dokumentieren.
-3. Die konkrete Supabase-Projektregion Frankfurt und die Vercel-Function-Region Frankfurt dokumentieren; die Vercel-Region nicht als Garantie ausschließlich unionsinterner Verarbeitung darstellen.
-4. Private Storage-Buckets, serverseitige Geheimnisse, kurze objektspezifische Upload-Links, RLS/Entzug von Browserrollen und rollenbasierte Mitarbeiterzugriffe beibehalten.
-5. Gerätecode, iPad-Sperre, kontrollierter Einsatz und tägliche Kontrolle der Offline-Warteschlange vorsehen.
-6. Nach hash-geprüfter Synchronisierung die vollständigen lokalen Quelldaten automatisch löschen.
-7. Löschlauf drei Jahre nach Veranstaltungsende, Legal-Hold-Prozess und Abschlussprotokoll organisatorisch festlegen.
-8. Verzeichnis der Verarbeitungstätigkeiten nach Art. 30 DSGVO, Interessenabwägung für Art. 6 Abs. 1 lit. f, Sicherheits-/Vorfallsprozess und Betroffenenanfragen dokumentieren.
-9. Keine Analyse-, Werbe- oder Fingerprinting-Skripte im Kiosk integrieren. Bei ausschließlich technisch erforderlichem Browser-/Gerätespeicher ist keine gesonderte TKG-Einwilligung erforderlich; die Nutzung wird in dieser Information offengelegt.
-10. Den finalen Text, die tatsächlichen Empfänger, Fotoveröffentlichungskanäle, die Art.-26-Rollen und die Fristen vor dem Live-Einsatz rechtlich freigeben.
+1. Schriftliche Prüfung der Teilnahme-Kopplung nach Art. 7 Abs. 4 DSGVO für Aufnahme, Veröffentlichung, kommerzielle Nutzung und Weitergabe abschließen; bei negativem Ergebnis „Nein“ wieder als gültigen Teilnahmeweg anbieten.
+2. Rechtlich freigegebene Masterdokumente bereitstellen, die nicht mehr von einer optionalen Foto-/Videoeinwilligung sprechen und mit App und tatsächlichem Ablauf übereinstimmen.
+3. Art.-26-Vereinbarung zwischen GWS und JTI unterschreiben und einen Kontaktpunkt festlegen.
+4. Art.-28-Verträge mit Supabase und Vercel sowie allen weiteren Auftragsverarbeitern abschließen; sicherstellen, dass der Vercel-Plan vom DPA erfasst ist; Unterauftragsverarbeiter und Drittlandgarantien dokumentieren.
+5. Die konkrete Supabase-Projektregion Frankfurt und die Vercel-Function-Region Frankfurt dokumentieren; die Vercel-Region nicht als Garantie ausschließlich unionsinterner Verarbeitung darstellen.
+6. Private Storage-Buckets, serverseitige Geheimnisse, kurze objektspezifische Upload-Links, RLS/Entzug von Browserrollen und rollenbasierte Mitarbeiterzugriffe beibehalten.
+7. Gerätecode, iPad-Sperre, kontrollierter Einsatz und tägliche Kontrolle der Offline-Warteschlange vorsehen.
+8. Nach hash-geprüfter Synchronisierung die vollständigen lokalen Quelldaten automatisch löschen.
+9. Löschlauf drei Jahre nach Veranstaltungsende, Legal-Hold-Prozess und Abschlussprotokoll organisatorisch festlegen.
+10. Verzeichnis der Verarbeitungstätigkeiten nach Art. 30 DSGVO, Interessenabwägung für Art. 6 Abs. 1 lit. f, Sicherheits-/Vorfallsprozess und Betroffenenanfragen dokumentieren.
+11. Keine Analyse-, Werbe- oder Fingerprinting-Skripte im Kiosk integrieren. Bei ausschließlich technisch erforderlichem Browser-/Gerätespeicher ist keine gesonderte TKG-Einwilligung erforderlich; die Nutzung wird in dieser Information offengelegt.
+12. Den finalen Text, die tatsächlichen Empfänger, Fotoveröffentlichungskanäle, die Art.-26-Rollen und die Fristen vor dem Live-Einsatz rechtlich freigeben.
 
 ## Verifizierte offizielle Quellen
 
@@ -150,6 +157,8 @@ Bei Fotoauswahl „Nein“:
 - [Österreichische Datenschutzbehörde: Pflichten als Verantwortlicher](https://dsb.gv.at/rechte-pflichten/ihre-pflichten-als-verantwortlicher)
 - [Österreichische Datenschutzbehörde: Rechte betroffener Personen](https://dsb.gv.at/rechte-pflichten/ihre-rechte-als-betroffene-person)
 - [Österreichische Datenschutzbehörde: FAQ Foto & Video](https://dsb.gv.at/faqs/foto-video)
+- [§ 78 UrhG – Bildnisschutz, geltende Fassung – RIS](https://www.ris.bka.gv.at/NormDokument.wxe?Abfrage=Bundesnormen&Anlage=&Artikel=&Gesetzesnummer=10001848&Paragraf=78&ShowPrintPreview=True&Uebergangsrecht=)
+- [OGH 26.03.2025, 6 Ob 49/25m – Reichweite einer Bildnis-Einwilligung – RIS](https://www.ris.bka.gv.at/Dokument.wxe?Abfrage=Justiz&Dokumentnummer=JJT_20250326_OGH0002_0060OB00049_25M0000_000)
 - [Österreichische Datenschutzbehörde: FAQ zu Informationspflichten](https://dsb.gv.at/faqs/faq)
 - [Datenschutzgesetz, geltende Fassung 2026 – RIS](https://www.ris.bka.gv.at/GeltendeFassung.wxe?Abfrage=Bundesnormen&Gesetzesnummer=10001597)
 - [§ 1489 ABGB, geltende Fassung 2026 – RIS](https://ris.bka.gv.at/NormDokument.wxe?Abfrage=Bundesnormen&Anlage=&Artikel=&FassungVom=2026-02-01&Gesetzesnummer=10001622&Paragraf=1489&ShowPrintPreview=True&Uebergangsrecht=)
@@ -161,4 +170,3 @@ Bei Fotoauswahl „Nein“:
 - [Vercel Privacy Notice, Stand 1. Juni 2026](https://vercel.com/legal/privacy-notice)
 
 Als reine Strukturinspiration wurde außerdem die [offizielle Coca-Cola Datenschutzinformation 2026](https://datatrust.coca-cola.com/content/dam/privacyhub/shared/notice-pdfs/german/global-consumer-privacy-notice-01312026-german.pdf) herangezogen. Formulierungen und inhaltliche Aussagen dieses Konzepts wurden nicht daraus übernommen, sondern auf den konkreten GWS-/JTI-Prozess und die oben genannten offiziellen Rechtsquellen abgestimmt.
-

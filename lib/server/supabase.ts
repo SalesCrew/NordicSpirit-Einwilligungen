@@ -22,7 +22,7 @@ interface ConsentRow {
   synced_at: string;
   privacy_notice_version: string;
   privacy_acknowledged_at_client: string;
-  photo_choice_haftung: "yes" | "no";
+  photo_choice_haftung: "yes";
   haftung_path: string;
   einwilligung_path: string;
   haftung_sha256: string;

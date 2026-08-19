@@ -31,3 +31,12 @@ test("integrated submission endpoints and offline worker are present", async () 
   ];
   await Promise.all(paths.map((path) => readFile(new URL(path, root), "utf8")));
 });
+
+test("the application rejects submissions without mandatory photo consent", async () => {
+  const validation = await readFile(new URL("lib/server/validation.ts", root), "utf8");
+  const page = await readFile(new URL("app/page.tsx", root), "utf8");
+  assert.match(validation, /parsed\.photoChoiceHaftung !== "yes"/);
+  assert.match(page, /photoChoice === "yes"/);
+  assert.match(page, /Teilnahmevoraussetzung Foto/);
+  assert.doesNotMatch(page, /Du kannst trotzdem an/);
+});

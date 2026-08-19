@@ -51,6 +51,8 @@ Die Setup-Seite prüft außerdem die Offline-Bereitschaft, zeigt lokale Speicher
 
 Beide POST-Endpunkte erwarten JSON-Metadaten. Zwischen `prepare` und `complete` lädt der Browser die beiden DOCX-Dateien direkt über die kurzlebigen signierten URLs in den privaten Bucket. Der geheime Supabase-Schlüssel bleibt dabei ausschließlich auf dem Server. `complete` lädt die privaten Objekte serverseitig, vergleicht beide SHA-256-Hashwerte erneut, erzwingt die Gerätebindung und akzeptiert höchstens 12 MiB pro DOCX-Datei.
 
+Neue Einreichungen werden nur mit der ausdrücklichen Foto-/Videoauswahl `yes` akzeptiert. Bei `no` beendet die Oberfläche die Anmeldung vor der Dokumenterzeugung; auch ein direkt manipulierter API-Aufruf wird mit `400` abgewiesen und erzeugt weder Datensatz noch Upload-URLs.
+
 ## Offline- und Sync-Verhalten
 
 - Beide ausgefüllten DOCX-Dateien werden vollständig im Browser erzeugt.
@@ -69,15 +71,17 @@ Die technische Umsetzung ersetzt keine organisatorische Freigabe. Vor dem ersten
 1. Rollen von GWS und JTI bestätigen und eine Vereinbarung nach Art. 26 DSGVO unterschreiben; falls tatsächlich getrennte Verantwortlichkeit vorliegt, die App-Texte entsprechend ändern.
 2. Supabase- und Vercel-DPA nach Art. 28 DSGVO abschließen, Unterauftragsverarbeiter/Drittlandgarantien prüfen und die konkrete Supabase- sowie Vercel-Function-Region dokumentieren. Der aktuelle Vercel-DPA gilt für Pro- und Enterprise-Pläne; der eingesetzte Plan muss davon erfasst sein.
 3. Den Teilnehmer:innen-Text und das vollständige Konzept in `DATENSCHUTZ_AUSTRIA_2026.md` rechtlich freigeben.
-4. Die Foto-/Videoauswahl freiwillig lassen: „Nein“ ist ein gültiger Teilnahmeweg und erzeugt einen Nicht-Einwilligungsnachweis statt einer unterschriebenen Einwilligung.
-5. Löschlauf grundsätzlich drei Jahre nach Ende des Frequency Festivals 2026 sowie einen fallbezogenen Legal-Hold-Prozess festlegen. Keine pauschale 30-Jahres-Aufbewahrung.
-6. Berechtigungen für GWS/JTI, iPad-Geräteschutz, tägliche Offline-Queue-Kontrolle, Abschlusskontrolle und Bearbeitung von Betroffenenanfragen dokumentieren.
+4. Die Teilnahme-Kopplung der Foto-/Videoeinwilligung nach Art. 7 Abs. 4 DSGVO für jeden beschriebenen Nutzungszweck schriftlich prüfen und freigeben lassen. Die App verlangt derzeit technisch „Ja“ und speichert bei „Nein“ nichts. Kann die objektive Erforderlichkeit nicht belastbar begründet werden, muss die Oberfläche wieder einen gültigen Teilnahmeweg mit „Nein“ anbieten.
+5. Die rechtlich freigegebenen Masterdokumente mit dem erzwungenen App-Ablauf abstimmen; Unterlagen, die die Foto-/Videoeinwilligung als optional bezeichnen, dürfen nicht zusammen mit diesem Ablauf eingesetzt werden.
+6. Löschlauf grundsätzlich drei Jahre nach Ende des Frequency Festivals 2026 sowie einen fallbezogenen Legal-Hold-Prozess festlegen. Keine pauschale 30-Jahres-Aufbewahrung.
+7. Berechtigungen für GWS/JTI, iPad-Geräteschutz, tägliche Offline-Queue-Kontrolle, Abschlusskontrolle und Bearbeitung von Betroffenenanfragen dokumentieren.
 
 ## Empfohlener Abnahmetest
 
 1. iPad online freischalten und einen Testdatensatz synchronisieren.
-2. Flugmodus aktivieren und mindestens zehn vollständige Datensätze erfassen.
-3. App schließen und vom Home-Bildschirm erneut offline öffnen.
-4. Unter `/setup` prüfen, dass alle zehn Datensätze ausstehend sind.
-5. Netzwerk wiederherstellen und „Jetzt synchronisieren“ ausführen.
-6. In Supabase pro UUID genau zwei DOCX-Dateien und einen Metadatensatz prüfen; Hashwerte müssen übereinstimmen.
+2. „Nein“ zur Foto-/Videoeinwilligung auswählen; die Anmeldung muss blockiert werden und darf weder lokalen Datensatz noch Upload erzeugen.
+3. Flugmodus aktivieren und mindestens zehn vollständige Datensätze mit ausdrücklichem „Ja“ erfassen.
+4. App schließen und vom Home-Bildschirm erneut offline öffnen.
+5. Unter `/setup` prüfen, dass alle zehn Datensätze ausstehend sind.
+6. Netzwerk wiederherstellen und „Jetzt synchronisieren“ ausführen.
+7. In Supabase pro UUID genau zwei DOCX-Dateien und einen Metadatensatz prüfen; Hashwerte müssen übereinstimmen.

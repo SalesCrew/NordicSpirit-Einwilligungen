@@ -370,11 +370,13 @@ function PrivacyNoticeScreen({ onContinue }: { onContinue: () => void }) {
               </p>
               <p>
                 Die Aufnahme und Nutzung erkennbarer Foto-/Videoaufnahmen erfolgt nur, wenn du
-                gesondert „Ja“ auswählst (Art. 6 Abs. 1 lit. a DSGVO). Ein „Nein“ verhindert
-                deine Teilnahme an der Aktivität nicht. Du kannst eine erteilte Einwilligung
-                jederzeit mit Wirkung für die Zukunft über konsumentenservice@jti.com
-                widerrufen. Die Rechtmäßigkeit der Verarbeitung bis zum Widerruf bleibt
-                unberührt.
+                gesondert „Ja“ auswählst (Art. 6 Abs. 1 lit. a DSGVO). Die Aktivität ist als
+                Foto-/Video-Promotion konzipiert; die Einwilligung in die im Dokument
+                beschriebenen Aufnahmen und Nutzungen ist daher Teilnahmevoraussetzung. Wenn
+                du „Nein“ auswählst, kann die Anmeldung nicht abgeschlossen werden. Du kannst
+                eine erteilte Einwilligung jederzeit mit Wirkung für die Zukunft über
+                konsumentenservice@jti.com widerrufen. Die Rechtmäßigkeit der Verarbeitung bis
+                zum Widerruf bleibt unberührt.
               </p>
             </section>
 
@@ -442,11 +444,11 @@ function PrivacyNoticeScreen({ onContinue }: { onContinue: () => void }) {
             <section className="legal-section">
               <h2>7. Musst du die Daten angeben?</h2>
               <p>
-                Name, Geburtsdatum, Datum, Unterschrift und die Bestätigung der
-                Teilnahmebedingungen sind für die Teilnahme erforderlich. Ohne diese Angaben
-                kann die Anmeldung nicht abgeschlossen werden. Die Foto-/Videoeinwilligung ist
-                freiwillig; ein „Nein“ hat keine Auswirkung auf die Teilnahme. Es findet keine
-                ausschließlich automatisierte Entscheidung und kein Profiling statt.
+                Name, Geburtsdatum, Datum, Unterschrift, die Bestätigung der
+                Teilnahmebedingungen und die ausdrückliche Foto-/Videoeinwilligung sind für
+                diese Aktivität erforderlich. Ohne diese Angaben und Bestätigungen kann die
+                Anmeldung nicht abgeschlossen werden. Es findet keine ausschließlich
+                automatisierte Entscheidung und kein Profiling statt.
               </p>
             </section>
 
@@ -564,6 +566,7 @@ function SignaturePad({ value, onChange }: { value: string; onChange: (value: st
 
 function ParticipationForm({
   onContinue,
+  onAbort,
   onOpenPrivacy,
   fullName,
   setFullName,
@@ -581,6 +584,7 @@ function ParticipationForm({
   setSignature,
 }: {
   onContinue: () => void;
+  onAbort: () => void;
   onOpenPrivacy: () => void;
   fullName: string;
   setFullName: (value: string) => void;
@@ -603,7 +607,7 @@ function ParticipationForm({
   const valid =
     readConfirmed &&
     privacyAcknowledged &&
-    (photoChoice === "yes" || photoChoice === "no") &&
+    photoChoice === "yes" &&
     fullName.trim().length >= 3 &&
     Boolean(birthDate) &&
     adult &&
@@ -759,19 +763,30 @@ function ParticipationForm({
         <div className="modal-backdrop" role="presentation">
           <section className="modal-card" role="dialog" aria-modal="true" aria-labelledby="no-title">
             <div className="modal-icon no-consent-modal-icon" aria-hidden="true">i</div>
-            <h2 id="no-title">Keine Foto-/Videoeinwilligung</h2>
+            <h2 id="no-title">Teilnahmevoraussetzung Foto &amp; Video</h2>
             <p>
-              Du kannst trotzdem an „Geh ma steil!“ teilnehmen. Wir erstellen lediglich einen
-              Nachweis deiner Auswahl, damit keine erkennbare kommerzielle Foto-/Videoverwendung
-              auf Grundlage dieser Einwilligung erfolgt.
+              Für die Teilnahme an „Geh ma steil!“ ist die Einwilligung in die im Dokument
+              beschriebenen Foto- und Videoaufnahmen und deren Nutzung erforderlich. Mit „Nein“
+              kann die Anmeldung nicht abgeschlossen werden. Deine Auswahl wird nicht als
+              Teilnahme gespeichert.
             </p>
             <div className="modal-actions">
               <button
                 className="primary-button compact-button"
                 type="button"
-                onClick={() => setShowNoModal(false)}
+                onClick={() => {
+                  setPhotoChoice("");
+                  setShowNoModal(false);
+                }}
               >
-                Verstanden
+                Auswahl ändern
+              </button>
+              <button
+                className="secondary-button"
+                type="button"
+                onClick={onAbort}
+              >
+                Zur Startseite
               </button>
             </div>
           </section>
@@ -783,14 +798,12 @@ function ParticipationForm({
 
 function ReviewWordDocument({
   type,
-  photoChoice,
   fullName,
   birthDate,
   signedDate,
   signature,
 }: {
   type: "liability" | "consent";
-  photoChoice: Exclude<PhotoChoice, "">;
   fullName: string;
   birthDate: string;
   signedDate: string;
@@ -807,60 +820,9 @@ function ReviewWordDocument({
           "/documents/einwilligung/page-1.png",
           "/documents/einwilligung/page-2.png",
         ];
-  const title =
-    type === "liability"
-      ? "Haftungsausschluss und Datenschutzinformation"
-      : photoChoice === "yes"
-        ? "Einwilligung zur Foto- und Videoverwendung"
-        : "Nachweis: Keine Foto- und Videoeinwilligung";
-
-  if (type === "consent" && photoChoice === "no") {
-    return (
-      <section className="review-word-document" aria-label={title}>
-        <div className="review-document-label">{title}</div>
-        <div className="no-consent-review-page">
-          <span className="no-consent-overline">Frequency Festival 2026 · Geh ma steil!</span>
-          <h3>Nachweis: Keine Foto- und Videoeinwilligung</h3>
-          <p className="no-consent-subtitle">
-            Entscheidung zur Aufnahme, Verarbeitung und kommerziellen Nutzung erkennbarer
-            Foto- und Videoaufnahmen
-          </p>
-          <hr />
-          <h4>Keine Einwilligung erteilt</h4>
-          <p>
-            Die unten genannte Person hat keine Einwilligung zur Aufnahme, Veröffentlichung
-            oder kommerziellen Nutzung von Foto- oder Videoaufnahmen erteilt, auf denen sie
-            erkennbar ist. Die Teilnahme an der Aktivität bleibt davon unberührt.
-          </p>
-          <p>
-            <strong>Wichtig:</strong> Dieses Dokument ist keine Einwilligung. Es hält
-            ausschließlich die freiwillige Auswahl „Nein“ fest.
-          </p>
-          <dl className="no-consent-review-fields">
-            <div><dt>Vor- und Nachname</dt><dd>{fullName}</dd></div>
-            <div><dt>Geburtsdatum</dt><dd>{formatDate(birthDate)}</dd></div>
-            <div><dt>Datum</dt><dd>{formatDate(signedDate)}</dd></div>
-            <div className="no-consent-review-signature-row">
-              <dt>Unterschrift</dt>
-              <dd>
-                {signature && (
-                  <Image
-                    className="no-consent-review-signature"
-                    src={signature}
-                    alt="Unterschrift"
-                    width={500}
-                    height={180}
-                    unoptimized
-                  />
-                )}
-              </dd>
-            </div>
-          </dl>
-          <small>Datenschutzinformation: Version {PRIVACY_NOTICE_VERSION}</small>
-        </div>
-      </section>
-    );
-  }
+  const title = type === "liability"
+    ? "Haftungsausschluss und Datenschutzinformation"
+    : "Einwilligung zur Foto- und Videoverwendung";
 
   return (
     <section className="review-word-document" aria-label={title}>
@@ -881,7 +843,7 @@ function ReviewWordDocument({
 
           {type === "liability" && index === 0 && (
             <div className="review-field-layer" aria-hidden="true">
-              <span className={`review-field liability-check ${photoChoice === "no" ? "liability-check-no" : ""}`}>✓</span>
+              <span className="review-field liability-check">✓</span>
               <span className="review-field liability-name">{fullName}</span>
               <span className="review-field liability-birth">{formatDate(birthDate)}</span>
               <span className="review-field liability-date">{formatDate(signedDate)}</span>
@@ -928,7 +890,6 @@ function ReviewScreen({
   birthDate,
   signedDate,
   signature,
-  photoChoice,
 }: {
   onConfirm: () => void;
   saving: boolean;
@@ -936,7 +897,6 @@ function ReviewScreen({
   birthDate: string;
   signedDate: string;
   signature: string;
-  photoChoice: Exclude<PhotoChoice, "">;
 }) {
   return (
     <main className="review-reader">
@@ -950,7 +910,6 @@ function ReviewScreen({
 
           <ReviewWordDocument
             type="liability"
-            photoChoice={photoChoice}
             fullName={fullName}
             birthDate={birthDate}
             signedDate={signedDate}
@@ -959,7 +918,6 @@ function ReviewScreen({
 
           <ReviewWordDocument
             type="consent"
-            photoChoice={photoChoice}
             fullName={fullName}
             birthDate={birthDate}
             signedDate={signedDate}
@@ -1085,7 +1043,7 @@ export default function Home() {
 
       const id = crypto.randomUUID();
       const deviceId = await getOrCreateDeviceId();
-      const confirmedPhotoChoice = photoChoice === "yes" || photoChoice === "no" ? photoChoice : null;
+      const confirmedPhotoChoice = photoChoice === "yes" ? photoChoice : null;
       if (!confirmedPhotoChoice || !privacyAcknowledged || !privacyAcknowledgedAtClient) {
         throw new Error("Erforderliche Bestätigungen fehlen");
       }
@@ -1219,6 +1177,7 @@ export default function Home() {
     return (
       <ParticipationForm
         onContinue={() => goTo("preview")}
+        onAbort={reset}
         onOpenPrivacy={() => goTo("privacy")}
         fullName={fullName}
         setFullName={setFullName}
@@ -1251,7 +1210,6 @@ export default function Home() {
           birthDate={birthDate}
           signedDate={signedDate}
           signature={signature}
-          photoChoice={photoChoice as Exclude<PhotoChoice, "">}
         />
         {saveDialog && (
           <SaveStatusDialog

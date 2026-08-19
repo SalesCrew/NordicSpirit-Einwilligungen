@@ -29,7 +29,7 @@ function metadataFor(haftungBytes, einwilligungBytes, recordId = id, photoChoice
     signedOn: "2026-08-18",
     templateHaftungVersion: "2026-08-18",
     templateEinwilligungVersion: "2026-08-18",
-    privacyNoticeVersion: "2026-08-19",
+    privacyNoticeVersion: "2026-08-19.2",
     privacyAcknowledgedAtClient: "2026-08-19T12:00:00.000Z",
     photoChoiceHaftung: photoChoice,
     haftungSha256: hash(haftungBytes),
@@ -92,20 +92,22 @@ assert.equal(duplicate.status, 201);
 const conflict = await submit(Buffer.from("different-docx-one"), Buffer.from("different-docx-two"));
 assert.equal(conflict.status, 409);
 
-const noConsentId = randomUUID();
-const noConsent = await submit(
-  Buffer.alloc(1_300_000, 51),
-  Buffer.alloc(400_000, 67),
-  noConsentId,
-  "no",
+const noConsent = await post(
+  "/api/submissions/prepare",
+  metadataFor(
+    Buffer.alloc(1_300_000, 51),
+    Buffer.alloc(400_000, 67),
+    randomUUID(),
+    "no",
+  ),
 );
-assert.equal(noConsent.status, 201, await noConsent.clone().text());
+assert.equal(noConsent.status, 400, await noConsent.clone().text());
 
 const state = await (await fetch(`${mockUrl}/__state`)).json();
-assert.equal(state.records.length, 2);
-assert.equal(state.records.find((record) => record.id === noConsentId)?.photo_choice_haftung, "no");
-assert.ok(state.records.every((record) => record.privacy_notice_version === "2026-08-19"));
-assert.equal(state.uploads.length, 4);
+assert.equal(state.records.length, 1);
+assert.ok(state.records.every((record) => record.photo_choice_haftung === "yes"));
+assert.ok(state.records.every((record) => record.privacy_notice_version === "2026-08-19.2"));
+assert.equal(state.uploads.length, 2);
 assert.ok(state.uploads.every((upload) => upload.size > 0));
 
 process.stdout.write("backend integration: ok\n");
