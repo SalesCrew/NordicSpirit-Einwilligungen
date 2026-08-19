@@ -1034,8 +1034,30 @@ h1 {
 }
 .setup-card h1 { margin: 10px 0; font-size: clamp(32px, 7vw, 48px); letter-spacing: -.045em; }
 .setup-card > p { margin: 0 0 28px; color: var(--muted); line-height: 1.5; }
+.setup-card > .setup-message {
+  display: grid;
+  gap: 3px;
+  padding: 13px 15px;
+  border: 1px solid #f1b1a8;
+  border-radius: 10px;
+  background: #fff4f1;
+  color: #63271f;
+}
+.setup-card > .setup-message strong { color: inherit; }
+.setup-card > .setup-message span { color: inherit; }
+.setup-card > .setup-message.ready {
+  border-color: #97d8ba;
+  background: #edf9f3;
+  color: #155f40;
+}
 .setup-card form { display: grid; gap: 18px; }
 .setup-card .start-button { width: 100%; margin-top: 6px; }
+.setup-card .setup-unlocked-button:disabled {
+  border-color: #25845e;
+  background: #25845e;
+  color: #fff;
+  opacity: 1;
+}
 .field .setup-code-control { position: relative; display: block; }
 .field .setup-code-control input { padding-right: 58px; }
 .setup-code-visibility {

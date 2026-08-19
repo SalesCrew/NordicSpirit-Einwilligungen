@@ -16,6 +16,7 @@ export default function SetupPage() {
   const [deviceId, setDeviceId] = useState("");
   const [setupCode, setSetupCode] = useState("");
   const [showSetupCode, setShowSetupCode] = useState(false);
+  const [configured, setConfigured] = useState(false);
   const [message, setMessage] = useState("Gerätestatus wird geprüft …");
   const [working, setWorking] = useState(false);
   const [counts, setCounts] = useState({ pending: 0, uploading: 0, synced: 0, error: 0 });
@@ -39,7 +40,7 @@ export default function SetupPage() {
     if (nextCounts.pending + nextCounts.uploading + nextCounts.error === 0) {
       setMessage(result?.synced
         ? `${result.synced} Datensatz/Datensätze erfolgreich mit Supabase synchronisiert.`
-        : "Dieses iPad ist bereit für die Synchronisierung.");
+        : "Keine ausstehenden Datensätze. Dieses iPad ist freigeschaltet und bereit.");
       return;
     }
     setMessage("Die Synchronisierung läuft bereits. Bitte Status erneut prüfen.");
@@ -52,8 +53,9 @@ export default function SetupPage() {
       const session = response?.ok
         ? await response.json() as { configured?: boolean }
         : null;
+      setConfigured(Boolean(session?.configured));
       setMessage(session?.configured
-        ? "Dieses iPad ist bereit für die Synchronisierung."
+        ? "Dieses iPad ist freigeschaltet und bereit für die Synchronisierung."
         : "Dieses iPad muss einmalig freigeschaltet werden.");
       await Promise.all([
         refreshStatus(),
@@ -76,10 +78,23 @@ export default function SetupPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ deviceId, setupCode }),
+        credentials: "same-origin",
       });
       const body = await response.json() as { error?: string };
       if (!response.ok) throw new Error(body.error || "Freischaltung fehlgeschlagen");
+      const verificationResponse = await fetch("/api/device/session", {
+        cache: "no-store",
+        credentials: "same-origin",
+      });
+      const verification = verificationResponse.ok
+        ? await verificationResponse.json() as { configured?: boolean }
+        : null;
+      if (!verification?.configured) {
+        throw new Error("Die Freischaltung konnte auf diesem iPad nicht gespeichert werden. Bitte erneut versuchen.");
+      }
+      setConfigured(true);
       setSetupCode("");
+      setShowSetupCode(false);
       setMessage("Dieses iPad ist freigeschaltet. Ausstehende Datensätze werden jetzt synchronisiert.");
       await syncQueue();
     } catch (error) {
@@ -94,7 +109,10 @@ export default function SetupPage() {
       <section className="setup-card">
         <span className="document-tag">Personal-Setup</span>
         <h1>iPad freischalten</h1>
-        <p>{message}</p>
+        <p className={`setup-message ${configured ? "ready" : ""}`} role="status" aria-live="polite">
+          <strong>{configured ? "Freigeschaltet" : "Setup erforderlich"}</strong>
+          <span>{message}</span>
+        </p>
         <form onSubmit={submit}>
           <label className="field">
             <span>Geräte-ID</span>
@@ -134,8 +152,12 @@ export default function SetupPage() {
               </button>
             </span>
           </div>
-          <button className="primary-button start-button" type="submit" disabled={working || !deviceId || !setupCode}>
-            {working ? "Wird freigeschaltet …" : "iPad freischalten"}
+          <button
+            className={`primary-button start-button ${configured ? "setup-unlocked-button" : ""}`}
+            type="submit"
+            disabled={configured || working || !deviceId || !setupCode}
+          >
+            {configured ? "iPad freigeschaltet ✓" : working ? "Wird freigeschaltet …" : "iPad freischalten"}
           </button>
         </form>
         <div className="setup-queue" aria-label="Lokale Warteschlange">
@@ -165,7 +187,7 @@ export default function SetupPage() {
         <button
           className="secondary-button setup-sync-button"
           type="button"
-          disabled={working}
+          disabled={working || !configured}
           onClick={() => {
             setWorking(true);
             void syncQueue()
@@ -173,7 +195,7 @@ export default function SetupPage() {
               .finally(() => setWorking(false));
           }}
         >
-          Jetzt synchronisieren
+          {configured ? "Jetzt synchronisieren" : "Zuerst iPad freischalten"}
         </button>
         <Link href="/">Zur App</Link>
       </section>
