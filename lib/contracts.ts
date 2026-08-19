@@ -8,6 +8,7 @@ export const PRIVACY_NOTICE_VERSION =
   process.env.NEXT_PUBLIC_PRIVACY_NOTICE_VERSION ?? "2026-08-19.2";
 
 export type LocalSyncState = "pending" | "uploading" | "synced" | "error";
+export type StoredDocument = Blob | ArrayBuffer;
 
 export interface ConsentSourceData {
   fullName: string;
@@ -40,8 +41,8 @@ export interface SubmissionMetadata {
 export interface LocalConsentRecord extends SubmissionMetadata {
   source: ConsentSourceData | null;
   signaturePng: Blob | null;
-  haftungDocx: Blob | null;
-  einwilligungDocx: Blob | null;
+  haftungDocx: StoredDocument | null;
+  einwilligungDocx: StoredDocument | null;
   syncState: LocalSyncState;
   retryCount: number;
   nextRetryAt: string | null;

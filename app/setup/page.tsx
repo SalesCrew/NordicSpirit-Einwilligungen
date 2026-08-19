@@ -30,10 +30,22 @@ export default function SetupPage() {
   };
 
   const syncQueue = async () => {
-    const result = await syncPendingRecords(true);
+    setMessage("Synchronisierung wird gestartet …");
+    const result = await syncPendingRecords(true, (progress) => {
+      setMessage(
+        `Synchronisierung läuft: ${progress.attempted} von ${progress.total} geprüft · ${progress.synced} erfolgreich · ${progress.failed} fehlgeschlagen`,
+      );
+      void refreshStatus().catch(() => undefined);
+    });
     const nextCounts = await refreshStatus();
+    if (!result) {
+      setMessage("Eine Synchronisierung läuft bereits. Der Status wird automatisch aktualisiert.");
+      return;
+    }
     if (result?.failed) {
-      setMessage(`Synchronisierung fehlgeschlagen: ${result.lastError || "Unbekannter Fehler"}`);
+      setMessage(
+        `Synchronisierung beendet: ${result.synced} erfolgreich, ${result.failed} fehlgeschlagen. ${result.lastError || "Unbekannter Fehler"}`,
+      );
       return;
     }
     if (nextCounts.pending + nextCounts.uploading + nextCounts.error === 0) {
@@ -194,7 +206,11 @@ export default function SetupPage() {
               .finally(() => setWorking(false));
           }}
         >
-          {configured ? "Jetzt synchronisieren" : "Zuerst iPad freischalten"}
+          {working
+            ? "Synchronisierung läuft …"
+            : configured
+              ? "Jetzt synchronisieren"
+              : "Zuerst iPad freischalten"}
         </button>
         <button
           className="setup-app-link"

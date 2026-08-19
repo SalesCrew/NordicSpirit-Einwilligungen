@@ -37,8 +37,8 @@ test("the offline worker cannot activate with a partial or stale build shell", a
   const worker = await readFile(new URL("public/sw.js", root), "utf8");
   const client = await readFile(new URL("lib/client/pwa.ts", root), "utf8");
 
-  assert.match(worker, /frequency-consent-shell-v12/);
-  assert.match(client, /frequency-consent-shell-v12/);
+  assert.match(worker, /frequency-consent-shell-v13/);
+  assert.match(client, /frequency-consent-shell-v13/);
   assert.match(worker, /\/assets\/frequency-finish-background\.png/);
   assert.match(client, /\/assets\/frequency-finish-background\.png/);
   assert.match(worker, /BUILD_ASSET_PREFIX = "\/_next\/static\/"/);
@@ -70,7 +70,8 @@ test("the kiosk setup is visible, required online, and reports synchronization f
 
   assert.match(setup, /type=\{showSetupCode \? "text" : "password"\}/);
   assert.match(setup, /Setup-Code anzeigen/);
-  assert.match(setup, /Synchronisierung fehlgeschlagen:/);
+  assert.match(setup, /Synchronisierung beendet:/);
+  assert.match(setup, /Synchronisierung läuft:/);
   assert.match(setup, /iPad freigeschaltet ✓/);
   assert.match(setup, /disabled=\{working \|\| !configured\}/);
   assert.match(setup, /Freischaltung konnte auf diesem iPad nicht gespeichert werden/);
@@ -86,11 +87,19 @@ test("the kiosk setup is visible, required online, and reports synchronization f
 test("iPad uploads use the same-origin server proxy instead of direct Storage requests", async () => {
   const sync = await readFile(new URL("lib/client/sync.ts", root), "utf8");
   const server = await readFile(new URL("lib/server/supabase.ts", root), "utf8");
+  const offlineDatabase = await readFile(new URL("lib/client/offline-db.ts", root), "utf8");
+  const page = await readFile(new URL("app/page.tsx", root), "utf8");
 
   assert.match(sync, /uploadToAppServer/);
   assert.match(sync, /credentials: "same-origin"/);
-  assert.match(sync, /body: blob/);
+  assert.match(sync, /body: document/);
   assert.doesNotMatch(sync, /body: await blob\.arrayBuffer\(\)/);
+  assert.match(sync, /REQUEST_TIMEOUT_MS/);
+  assert.match(sync, /regenerateQueuedDocuments/);
+  assert.match(sync, /containsLegacyBlob/);
+  assert.match(offlineDatabase, /INDEXED_DB_TIMEOUT_MS/);
+  assert.match(page, /documents\.haftungDocx\.arrayBuffer\(\)/);
+  assert.match(page, /haftungDocx,\s*einwilligungDocx,/);
   assert.doesNotMatch(sync, /uploadApiKey|uploadToSignedUrl/);
   assert.match(server, /uploadSubmissionDocument/);
   assert.match(server, /method: "POST"/);

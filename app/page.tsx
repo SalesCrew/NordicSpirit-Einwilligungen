@@ -1043,6 +1043,12 @@ export default function Home() {
         generateConsentDocuments(source),
         Promise.resolve(dataUrlToBlob(signature)),
       ]);
+      // IndexedDB Blob handles can become unreadable after an offline restart
+      // on iPadOS. Persist fully materialized bytes for reliable later uploads.
+      const [haftungDocx, einwilligungDocx] = await Promise.all([
+        documents.haftungDocx.arrayBuffer(),
+        documents.einwilligungDocx.arrayBuffer(),
+      ]);
       const now = new Date().toISOString();
       const record: LocalConsentRecord = {
         id,
@@ -1060,8 +1066,8 @@ export default function Home() {
         appVersion: APP_VERSION,
         source,
         signaturePng,
-        haftungDocx: documents.haftungDocx,
-        einwilligungDocx: documents.einwilligungDocx,
+        haftungDocx,
+        einwilligungDocx,
         syncState: "pending",
         retryCount: 0,
         nextRetryAt: null,
