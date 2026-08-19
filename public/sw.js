@@ -1,4 +1,4 @@
-const CACHE_NAME = "frequency-consent-shell-v9";
+const CACHE_NAME = "frequency-consent-shell-v10";
 const BUILD_ASSET_PREFIX = "/_next/static/";
 const CORE_URLS = [
   "/",
