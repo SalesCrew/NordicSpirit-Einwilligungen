@@ -127,6 +127,8 @@ h1 {
   font-weight: 760;
   letter-spacing: .015em;
   touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
   box-shadow:
     0 18px 44px rgba(12, 30, 42, .18),
     inset 0 1px 0 rgba(255,255,255,.18);
@@ -154,6 +156,19 @@ h1 {
       inset 0 1px 0 white;
   }
   .start-button:hover span { transform: translateX(4px); }
+}
+
+@media (any-pointer: coarse) {
+  .start-button:hover:not(:disabled) {
+    color: #18232d;
+    background: rgba(24, 35, 45, .10);
+    border-color: #18232d;
+    transform: none;
+    box-shadow:
+      0 18px 44px rgba(12, 30, 42, .18),
+      inset 0 1px 0 rgba(255,255,255,.18);
+  }
+  .start-button:hover span { transform: none; }
 }
 
 .document-reader {

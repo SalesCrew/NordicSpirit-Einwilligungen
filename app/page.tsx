@@ -1145,7 +1145,15 @@ export default function Home() {
       <main className="app-shell">
         <section className="start-screen" aria-labelledby="welcome-title">
           <h1 id="welcome-title" className="visually-hidden">Geh ma steil!</h1>
-          <button className="primary-button start-button" type="button" onClick={() => goTo("liability")}>
+          <button
+            className="primary-button start-button"
+            type="button"
+            onTouchEnd={(event) => {
+              event.preventDefault();
+              goTo("liability");
+            }}
+            onClick={() => goTo("liability")}
+          >
             Ich geh steil! <span aria-hidden="true">⟶</span>
           </button>
         </section>
