@@ -18,7 +18,7 @@ Add these variables in **Project → Settings → Environment Variables**.
 | `NEXT_PUBLIC_APP_VERSION` | `2026.1.1` | Public/build-time |
 | `NEXT_PUBLIC_TEMPLATE_HAFTUNG_VERSION` | `2026-08-18` | Public/build-time |
 | `NEXT_PUBLIC_TEMPLATE_EINWILLIGUNG_VERSION` | `2026-08-18` | Public/build-time |
-| `NEXT_PUBLIC_PRIVACY_NOTICE_VERSION` | `2026-08-19.2` | Public/build-time |
+| `NEXT_PUBLIC_PRIVACY_NOTICE_VERSION` | `2026-08-20.1` | Public/build-time |
 | `EVENT_ID` | `frequency-2026` | Server-only configuration |
 | `SUPABASE_URL` | `https://muqirsxlsfwslovdeawa.supabase.co` | Server-only configuration |
 | `SUPABASE_SECRET_KEY` | Copy the active `sb_secret_...` value from Supabase **Project Settings → API Keys → Secret keys** | **Sensitive/server-only** |

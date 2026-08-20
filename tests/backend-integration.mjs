@@ -48,7 +48,7 @@ function metadataFor(haftungBytes, einwilligungBytes, recordId = id, photoChoice
     signedOn: "2026-08-18",
     templateHaftungVersion: "2026-08-18",
     templateEinwilligungVersion: "2026-08-18",
-    privacyNoticeVersion: "2026-08-19.2",
+    privacyNoticeVersion: "2026-08-20.1",
     privacyAcknowledgedAtClient: "2026-08-19T12:00:00.000Z",
     photoChoiceHaftung: photoChoice,
     haftungSha256: hash(haftungBytes),
@@ -136,7 +136,7 @@ assert.equal(state.devices[0].device_id, deviceId);
 assert.equal(state.devices[0].active, true);
 assert.equal(state.records.length, 1);
 assert.ok(state.records.every((record) => record.photo_choice_haftung === "yes"));
-assert.ok(state.records.every((record) => record.privacy_notice_version === "2026-08-19.2"));
+assert.ok(state.records.every((record) => record.privacy_notice_version === "2026-08-20.1"));
 assert.equal(state.uploads.length, 2);
 assert.ok(state.uploads.every((upload) => upload.size > 0));
 

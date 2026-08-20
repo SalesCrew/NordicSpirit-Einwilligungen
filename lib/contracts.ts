@@ -5,7 +5,7 @@ export const LIABILITY_TEMPLATE_VERSION =
 export const CONSENT_TEMPLATE_VERSION =
   process.env.NEXT_PUBLIC_TEMPLATE_EINWILLIGUNG_VERSION ?? "2026-08-18";
 export const PRIVACY_NOTICE_VERSION =
-  process.env.NEXT_PUBLIC_PRIVACY_NOTICE_VERSION ?? "2026-08-19.2";
+  process.env.NEXT_PUBLIC_PRIVACY_NOTICE_VERSION ?? "2026-08-20.1";
 
 export type LocalSyncState = "pending" | "uploading" | "synced" | "error";
 export type StoredDocument = Blob | ArrayBuffer;

@@ -331,8 +331,8 @@ function PrivacyNoticeScreen({ onContinue }: { onContinue: () => void }) {
               <h2>1. Wer ist verantwortlich?</h2>
               <p>
                 Für die digitale Erfassung deiner Teilnahmeunterlagen und die gemeinsame
-                Nachweisführung sind die <strong>Gastro Werbe &amp; Service GmbH</strong>,
-                Eugengasse 25, 2500 Baden, hannes.friedriger@gws.co.at, und die
+                Nachweisführung sind die <strong>Sales Crew Verkaufsförderung GmbH</strong>,
+                Liebermannstraße A01/303-6, 2345 Brunn am Gebirge, client@salescrew.at, und die
                 <strong> JTI Austria GmbH</strong>, Erdberger Lände 26a/71, 1030 Wien,
                 FN 309726f, konsumentenservice@jti.com, gemeinsam verantwortlich. Du kannst
                 deine Datenschutzrechte gegenüber beiden Unternehmen ausüben. Für Foto- und
@@ -363,7 +363,7 @@ function PrivacyNoticeScreen({ onContinue }: { onContinue: () => void }) {
                 Wir verwenden deine Angaben, um deine Volljährigkeit zu prüfen, deine Teilnahme
                 abzuwickeln und die unterzeichneten Unterlagen zu erstellen (Art. 6 Abs. 1 lit. b
                 DSGVO). Dokumentversion, Auswahl, Unterzeichnung, Integrität und Übermittlung
-                werden gespeichert, damit GWS und JTI die ordnungsgemäße Abwicklung belegen,
+                werden gespeichert, damit Sales Crew und JTI die ordnungsgemäße Abwicklung belegen,
                 Ansprüche geltend machen oder abwehren und das System schützen können (Art. 6
                 Abs. 1 lit. f DSGVO). Unser berechtigtes Interesse ist eine beweissichere,
                 sichere und nachvollziehbare Veranstaltungsabwicklung.
@@ -383,7 +383,7 @@ function PrivacyNoticeScreen({ onContinue }: { onContinue: () => void }) {
             <section className="legal-section">
               <h2>4. Wer erhält die Daten?</h2>
               <p>
-                Zugriff erhalten nur berechtigte Mitarbeiter:innen von GWS und JTI sowie
+                Zugriff erhalten nur berechtigte Mitarbeiter:innen von Sales Crew und JTI sowie
                 notwendige IT-/Hosting-Dienstleister, die vertraglich gebunden sind. Bei
                 erteilter Foto-/Videoeinwilligung können beauftragte Fotograf:innen, Agenturen,
                 Medien-, Plattform- und Kooperationspartner die dafür erforderlichen Aufnahmen
@@ -435,7 +435,7 @@ function PrivacyNoticeScreen({ onContinue }: { onContinue: () => void }) {
                 widersprechen. Eine Einwilligung kannst du jederzeit für die Zukunft widerrufen.
               </p>
               <p>
-                Du kannst dich an GWS oder JTI wenden. Außerdem hast du das Recht auf Beschwerde
+                Du kannst dich an Sales Crew oder JTI wenden. Außerdem hast du das Recht auf Beschwerde
                 bei der <strong>Österreichischen Datenschutzbehörde</strong>, Barichgasse 40–42,
                 1030 Wien, +43 1 52 152-0, dsb@dsb.gv.at.
               </p>

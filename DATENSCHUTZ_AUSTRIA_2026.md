@@ -7,7 +7,7 @@ Arbeitsfassung für die technische Umsetzung; finale Freigabe durch österreichi
 
 Die aktuelle Produktentscheidung lautet: An „Geh ma steil!“ kann nur teilnehmen, wer der im Einwilligungsdokument beschriebenen Foto-/Videoaufnahme und -nutzung ausdrücklich mit „Ja“ zustimmt. Die App setzt diese Voraussetzung transparent um. Bei „Nein“ wird die Anmeldung beendet und weder ein Teilnehmerdatensatz noch ein Nicht-Einwilligungsdokument gespeichert.
 
-**Launch-Blocker – Freiwilligkeit und Kopplungsverbot:** Diese Produktentscheidung kann nicht allein durch eine bessere Formulierung datenschutzkonform gemacht werden. Nach Art. 7 Abs. 4 DSGVO und der aktuellen Einwilligungsleitlinie des Europäischen Datenschutzausschusses ist besonders zu prüfen, ob die Teilnahme von einer Einwilligung in Verarbeitungen abhängig gemacht wird, die für die Leistung nicht erforderlich sind. Führt die Ablehnung zum Ausschluss, besteht ein erhebliches Risiko, dass die Einwilligung nicht als freiwillig gilt. GWS und JTI müssen deshalb vor dem Live-Einsatz schriftlich und für jeden Aufnahme-, Veröffentlichungs- und Werbezweck belegen lassen, warum dieser objektiv für das konkrete Aktivitätskonzept erforderlich ist und ob eine weniger eingriffsintensive Gestaltung möglich ist. Ein bloßes kommerzielles Interesse oder die interne Bezeichnung als „Grundvoraussetzung“ genügt dafür nicht. Kann die Erforderlichkeit nicht belastbar begründet werden, muss „Nein“ wieder ein gültiger Teilnahmeweg sein.
+**Launch-Blocker – Freiwilligkeit und Kopplungsverbot:** Diese Produktentscheidung kann nicht allein durch eine bessere Formulierung datenschutzkonform gemacht werden. Nach Art. 7 Abs. 4 DSGVO und der aktuellen Einwilligungsleitlinie des Europäischen Datenschutzausschusses ist besonders zu prüfen, ob die Teilnahme von einer Einwilligung in Verarbeitungen abhängig gemacht wird, die für die Leistung nicht erforderlich sind. Führt die Ablehnung zum Ausschluss, besteht ein erhebliches Risiko, dass die Einwilligung nicht als freiwillig gilt. Sales Crew und JTI müssen deshalb vor dem Live-Einsatz schriftlich und für jeden Aufnahme-, Veröffentlichungs- und Werbezweck belegen lassen, warum dieser objektiv für das konkrete Aktivitätskonzept erforderlich ist und ob eine weniger eingriffsintensive Gestaltung möglich ist. Ein bloßes kommerzielles Interesse oder die interne Bezeichnung als „Grundvoraussetzung“ genügt dafür nicht. Kann die Erforderlichkeit nicht belastbar begründet werden, muss „Nein“ wieder ein gültiger Teilnahmeweg sein.
 
 **Launch-Blocker – widerspruchsfreie Dokumente:** Die vorhandenen Original-Unterlagen bezeichnen die Foto-/Videoeinwilligung als freiwillig beziehungsweise optional. Das ist mit einem technisch erzwungenen „Ja“ nicht vereinbar. Vor dem Live-Einsatz müssen rechtlich freigegebene Masterdokumente, App-Text und tatsächlicher Ablauf dieselbe Regel abbilden. Bis dahin ist die jetzige Umsetzung nur eine technische Arbeitsfassung.
 
@@ -17,10 +17,10 @@ Die Bestätigung der Datenschutzinformation ist kein eigener Erlaubnistatbestand
 
 Auf Basis des beschriebenen Ablaufs ist für die digitale Erfassung und die gemeinsame Nachweisführung folgende Rollenverteilung vorgesehen:
 
-- **Gastro Werbe & Service GmbH**, Eugengasse 25, 2500 Baden, E-Mail: hannes.friedriger@gws.co.at
+- **Sales Crew Verkaufsförderung GmbH**, Liebermannstraße A01/303-6, 2345 Brunn am Gebirge, E-Mail: client@salescrew.at
 - **JTI Austria GmbH**, Erdberger Lände 26a/71, 1030 Wien, FN 309726f, E-Mail: konsumentenservice@jti.com
 
-GWS und JTI entscheiden gemeinsam über Zweck und Mittel der digitalen Nachweisführung und sind dafür gemeinsam Verantwortliche gemäß Art. 26 DSGVO. JTI ist darüber hinaus für die in der gesonderten Einwilligung beschriebene Aufnahme, Veröffentlichung und kommerzielle Nutzung von Foto- und Videoaufnahmen verantwortlich.
+Sales Crew und JTI entscheiden gemeinsam über Zweck und Mittel der digitalen Nachweisführung und sind dafür gemeinsam Verantwortliche gemäß Art. 26 DSGVO. JTI ist darüber hinaus für die in der gesonderten Einwilligung beschriebene Aufnahme, Veröffentlichung und kommerzielle Nutzung von Foto- und Videoaufnahmen verantwortlich.
 
 **Launch-Blocker:** Diese Rollenverteilung muss vor dem Einsatz durch eine schriftliche Vereinbarung nach Art. 26 DSGVO bestätigt werden. Darin sind Zuständigkeiten für Betroffenenanfragen, Informationspflichten, Sicherheit, Löschung, Vorfälle und ein gemeinsamer Kontaktpunkt festzulegen. Falls die tatsächlichen Entscheidungen getrennt getroffen werden, muss der Text stattdessen auf getrennte Verantwortlichkeit angepasst werden. Bloßer Datenzugriff allein begründet noch keine gemeinsame Verantwortlichkeit.
 
@@ -51,7 +51,7 @@ Die Rohsignatur ist bei diesem Einsatz nicht automatisch ein besonderes biometri
 
 ## Empfänger und Zugriffe
 
-Zugriff erhalten ausschließlich hierzu berechtigte Mitarbeiter:innen von GWS und JTI, eingesetzte IT-/Hosting-Auftragsverarbeiter, bei erteilter Fotoeinwilligung beauftragte Fotograf:innen/Agenturen und die in der Einwilligung genannten Medien-/Kooperationskanäle sowie – nur bei einem Anlass – Rechtsberatung, Versicherungen, Gerichte, Behörden oder sonstige Stellen zur Bearbeitung eines Vorfalls oder Anspruchs.
+Zugriff erhalten ausschließlich hierzu berechtigte Mitarbeiter:innen von Sales Crew und JTI, eingesetzte IT-/Hosting-Auftragsverarbeiter, bei erteilter Fotoeinwilligung beauftragte Fotograf:innen/Agenturen und die in der Einwilligung genannten Medien-/Kooperationskanäle sowie – nur bei einem Anlass – Rechtsberatung, Versicherungen, Gerichte, Behörden oder sonstige Stellen zur Bearbeitung eines Vorfalls oder Anspruchs.
 
 Für jeden Auftragsverarbeiter ist vorab ein Vertrag gemäß Art. 28 DSGVO abzuschließen. Vercel wird für das Hosting der Web-App und der serverseitigen Schnittstellen eingesetzt; Supabase wird für die geschützte Dokument- und Nachweisspeicherung eingesetzt. Bei Supabase ist eine konkrete EU-Projektregion zu wählen; die allgemeine Regionsbezeichnung „Europe“ reicht nicht als Nachweis, weil sie auch Nicht-EU-Standorte umfassen kann. Die Function-Region von Vercel wird auf Frankfurt festgelegt. Das allein garantiert jedoch keine ausschließlich unionsinterne Verarbeitung, weil Vercel laut aktuellem DPA auch in den USA und an Standorten seiner Unterauftragsverarbeiter verarbeiten kann. Die aktuellen Datenverarbeitungsvereinbarungen, Unterauftragsverarbeiter und Garantien für etwaige Drittlandübermittlungen sind vor dem Start zu prüfen und zu dokumentieren. Der Vercel-DPA mit Stand 17. März 2026 gilt nach seinem Wortlaut für Pro- und Enterprise-Pläne; der tatsächlich eingesetzte Plan muss davon erfasst sein.
 
@@ -78,7 +78,7 @@ Ein Legal Hold darf nicht pauschal für alle Besucher:innen gelten. Er muss Anla
 
 #### 1. Wer ist verantwortlich?
 
-Für die digitale Erfassung deiner Teilnahmeunterlagen und die gemeinsame Nachweisführung sind die **Gastro Werbe & Service GmbH**, Eugengasse 25, 2500 Baden, hannes.friedriger@gws.co.at, und die **JTI Austria GmbH**, Erdberger Lände 26a/71, 1030 Wien, FN 309726f, konsumentenservice@jti.com, gemeinsam verantwortlich. Du kannst deine Datenschutzrechte gegenüber beiden Unternehmen ausüben. Für Foto- und Videoaufnahmen sowie deren in der gesonderten Einwilligung beschriebene Verwendung ist JTI verantwortlich.
+Für die digitale Erfassung deiner Teilnahmeunterlagen und die gemeinsame Nachweisführung sind die **Sales Crew Verkaufsförderung GmbH**, Liebermannstraße A01/303-6, 2345 Brunn am Gebirge, client@salescrew.at, und die **JTI Austria GmbH**, Erdberger Lände 26a/71, 1030 Wien, FN 309726f, konsumentenservice@jti.com, gemeinsam verantwortlich. Du kannst deine Datenschutzrechte gegenüber beiden Unternehmen ausüben. Für Foto- und Videoaufnahmen sowie deren in der gesonderten Einwilligung beschriebene Verwendung ist JTI verantwortlich.
 
 #### 2. Welche Daten verarbeiten wir?
 
@@ -86,13 +86,13 @@ Wir verarbeiten deinen Vor- und Nachnamen, dein Geburtsdatum, das Datum deiner T
 
 #### 3. Wofür und auf welcher Grundlage?
 
-Wir verwenden deine Angaben, um deine Volljährigkeit zu prüfen, deine Teilnahme abzuwickeln und die unterzeichneten Unterlagen zu erstellen (Art. 6 Abs. 1 lit. b DSGVO). Dokumentversion, Auswahl, Unterzeichnung, Integrität und Übermittlung werden gespeichert, damit GWS und JTI die ordnungsgemäße Abwicklung belegen, Ansprüche geltend machen oder abwehren und das System schützen können (Art. 6 Abs. 1 lit. f DSGVO). Unser berechtigtes Interesse ist eine beweissichere, sichere und nachvollziehbare Veranstaltungsabwicklung.
+Wir verwenden deine Angaben, um deine Volljährigkeit zu prüfen, deine Teilnahme abzuwickeln und die unterzeichneten Unterlagen zu erstellen (Art. 6 Abs. 1 lit. b DSGVO). Dokumentversion, Auswahl, Unterzeichnung, Integrität und Übermittlung werden gespeichert, damit Sales Crew und JTI die ordnungsgemäße Abwicklung belegen, Ansprüche geltend machen oder abwehren und das System schützen können (Art. 6 Abs. 1 lit. f DSGVO). Unser berechtigtes Interesse ist eine beweissichere, sichere und nachvollziehbare Veranstaltungsabwicklung.
 
 Die Aufnahme und Nutzung erkennbarer Foto-/Videoaufnahmen erfolgt nur, wenn du gesondert „Ja“ auswählst (Art. 6 Abs. 1 lit. a DSGVO). Die Aktivität ist als Foto-/Video-Promotion konzipiert; die Einwilligung in die im gesonderten Dokument beschriebenen Aufnahmen und Nutzungen ist daher Teilnahmevoraussetzung. Wenn du „Nein“ auswählst, kann die Anmeldung nicht abgeschlossen werden. Deine Auswahl wird dann nicht als Teilnahme gespeichert. Du kannst eine erteilte Einwilligung jederzeit mit Wirkung für die Zukunft über konsumentenservice@jti.com widerrufen. Die Rechtmäßigkeit der Verarbeitung bis zum Widerruf bleibt unberührt.
 
 #### 4. Wer erhält die Daten?
 
-Zugriff erhalten nur berechtigte Mitarbeiter:innen von GWS und JTI sowie notwendige IT-/Hosting-Dienstleister, die vertraglich gebunden sind. Bei erteilter Foto-/Videoeinwilligung können beauftragte Fotograf:innen, Agenturen, Medien-, Plattform- und Kooperationspartner die dafür erforderlichen Aufnahmen erhalten. Bei einem Vorfall oder Rechtsstreit können erforderliche Unterlagen an Rechtsberatung, Versicherungen, Gerichte, Behörden oder sonstige zuständige Stellen übermittelt werden.
+Zugriff erhalten nur berechtigte Mitarbeiter:innen von Sales Crew und JTI sowie notwendige IT-/Hosting-Dienstleister, die vertraglich gebunden sind. Bei erteilter Foto-/Videoeinwilligung können beauftragte Fotograf:innen, Agenturen, Medien-, Plattform- und Kooperationspartner die dafür erforderlichen Aufnahmen erhalten. Bei einem Vorfall oder Rechtsstreit können erforderliche Unterlagen an Rechtsberatung, Versicherungen, Gerichte, Behörden oder sonstige zuständige Stellen übermittelt werden.
 
 Für die Bereitstellung der Web-App und ihrer serverseitigen Schnittstellen wird Vercel als Hosting-Auftragsverarbeiter eingesetzt. Dabei werden die für Betrieb, Sicherheit und Übermittlung erforderlichen Anfragen, technischen Protokolldaten und Dokumente verarbeitet. Die geschützte Speicherung der unterzeichneten Dokumente erfolgt bei Supabase in der Projektregion Frankfurt (EU). Soweit Vercel, Supabase oder deren Unterauftragsverarbeiter Daten außerhalb des Europäischen Wirtschaftsraums verarbeiten, erfolgt dies nur auf Grundlage eines Angemessenheitsbeschlusses oder geeigneter Garantien wie EU-Standardvertragsklauseln. Weitere Informationen können über die oben genannten Kontakte angefordert werden.
 
@@ -106,7 +106,7 @@ Nicht synchronisierte Unterlagen bleiben im lokalen Browserspeicher des Veransta
 
 Du hast – je nach den gesetzlichen Voraussetzungen – das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung und Datenübertragbarkeit. Einer Verarbeitung auf Grundlage berechtigter Interessen kannst du aus Gründen, die sich aus deiner besonderen Situation ergeben, widersprechen. Eine Einwilligung kannst du jederzeit für die Zukunft widerrufen.
 
-Du kannst dich an GWS oder JTI wenden. Außerdem hast du das Recht auf Beschwerde bei der **Österreichischen Datenschutzbehörde**, Barichgasse 40–42, 1030 Wien, +43 1 52 152-0, dsb@dsb.gv.at.
+Du kannst dich an Sales Crew oder JTI wenden. Außerdem hast du das Recht auf Beschwerde bei der **Österreichischen Datenschutzbehörde**, Barichgasse 40–42, 1030 Wien, +43 1 52 152-0, dsb@dsb.gv.at.
 
 #### 7. Musst du die Daten angeben?
 
@@ -139,7 +139,7 @@ Bei Fotoauswahl „Nein“:
 
 1. Schriftliche Prüfung der Teilnahme-Kopplung nach Art. 7 Abs. 4 DSGVO für Aufnahme, Veröffentlichung, kommerzielle Nutzung und Weitergabe abschließen; bei negativem Ergebnis „Nein“ wieder als gültigen Teilnahmeweg anbieten.
 2. Rechtlich freigegebene Masterdokumente bereitstellen, die nicht mehr von einer optionalen Foto-/Videoeinwilligung sprechen und mit App und tatsächlichem Ablauf übereinstimmen.
-3. Art.-26-Vereinbarung zwischen GWS und JTI unterschreiben und einen Kontaktpunkt festlegen.
+3. Art.-26-Vereinbarung zwischen Sales Crew und JTI unterschreiben und einen Kontaktpunkt festlegen.
 4. Art.-28-Verträge mit Supabase und Vercel sowie allen weiteren Auftragsverarbeitern abschließen; sicherstellen, dass der Vercel-Plan vom DPA erfasst ist; Unterauftragsverarbeiter und Drittlandgarantien dokumentieren.
 5. Die konkrete Supabase-Projektregion Frankfurt und die Vercel-Function-Region Frankfurt dokumentieren; die Vercel-Region nicht als Garantie ausschließlich unionsinterner Verarbeitung darstellen.
 6. Private Storage-Buckets, serverseitige Geheimnisse, kurze objektspezifische Upload-Links, RLS/Entzug von Browserrollen und rollenbasierte Mitarbeiterzugriffe beibehalten.
@@ -169,4 +169,4 @@ Bei Fotoauswahl „Nein“:
 - [Vercel Data Processing Addendum, Stand 17. März 2026](https://vercel.com/legal/dpa)
 - [Vercel Privacy Notice, Stand 1. Juni 2026](https://vercel.com/legal/privacy-notice)
 
-Als reine Strukturinspiration wurde außerdem die [offizielle Coca-Cola Datenschutzinformation 2026](https://datatrust.coca-cola.com/content/dam/privacyhub/shared/notice-pdfs/german/global-consumer-privacy-notice-01312026-german.pdf) herangezogen. Formulierungen und inhaltliche Aussagen dieses Konzepts wurden nicht daraus übernommen, sondern auf den konkreten GWS-/JTI-Prozess und die oben genannten offiziellen Rechtsquellen abgestimmt.
+Als reine Strukturinspiration wurde außerdem die [offizielle Coca-Cola Datenschutzinformation 2026](https://datatrust.coca-cola.com/content/dam/privacyhub/shared/notice-pdfs/german/global-consumer-privacy-notice-01312026-german.pdf) herangezogen. Formulierungen und inhaltliche Aussagen dieses Konzepts wurden nicht daraus übernommen, sondern auf den konkreten Sales-Crew-/JTI-Prozess und die oben genannten offiziellen Rechtsquellen abgestimmt.

@@ -68,13 +68,13 @@ Neue Einreichungen werden nur mit der ausdrücklichen Foto-/Videoauswahl `yes` a
 
 Die technische Umsetzung ersetzt keine organisatorische Freigabe. Vor dem ersten echten Datensatz müssen mindestens diese Punkte abgeschlossen sein:
 
-1. Rollen von GWS und JTI bestätigen und eine Vereinbarung nach Art. 26 DSGVO unterschreiben; falls tatsächlich getrennte Verantwortlichkeit vorliegt, die App-Texte entsprechend ändern.
+1. Rollen von Sales Crew und JTI bestätigen und eine Vereinbarung nach Art. 26 DSGVO unterschreiben; falls tatsächlich getrennte Verantwortlichkeit vorliegt, die App-Texte entsprechend ändern.
 2. Supabase- und Vercel-DPA nach Art. 28 DSGVO abschließen, Unterauftragsverarbeiter/Drittlandgarantien prüfen und die konkrete Supabase- sowie Vercel-Function-Region dokumentieren. Der aktuelle Vercel-DPA gilt für Pro- und Enterprise-Pläne; der eingesetzte Plan muss davon erfasst sein.
 3. Den Teilnehmer:innen-Text und das vollständige Konzept in `DATENSCHUTZ_AUSTRIA_2026.md` rechtlich freigeben.
 4. Die Teilnahme-Kopplung der Foto-/Videoeinwilligung nach Art. 7 Abs. 4 DSGVO für jeden beschriebenen Nutzungszweck schriftlich prüfen und freigeben lassen. Die App verlangt derzeit technisch „Ja“ und speichert bei „Nein“ nichts. Kann die objektive Erforderlichkeit nicht belastbar begründet werden, muss die Oberfläche wieder einen gültigen Teilnahmeweg mit „Nein“ anbieten.
 5. Die rechtlich freigegebenen Masterdokumente mit dem erzwungenen App-Ablauf abstimmen; Unterlagen, die die Foto-/Videoeinwilligung als optional bezeichnen, dürfen nicht zusammen mit diesem Ablauf eingesetzt werden.
 6. Löschlauf grundsätzlich drei Jahre nach Ende des Frequency Festivals 2026 sowie einen fallbezogenen Legal-Hold-Prozess festlegen. Keine pauschale 30-Jahres-Aufbewahrung.
-7. Berechtigungen für GWS/JTI, iPad-Geräteschutz, tägliche Offline-Queue-Kontrolle, Abschlusskontrolle und Bearbeitung von Betroffenenanfragen dokumentieren.
+7. Berechtigungen für Sales Crew/JTI, iPad-Geräteschutz, tägliche Offline-Queue-Kontrolle, Abschlusskontrolle und Bearbeitung von Betroffenenanfragen dokumentieren.
 
 ## Empfohlener Abnahmetest
 

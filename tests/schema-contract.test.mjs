@@ -144,3 +144,15 @@ test("the application rejects submissions without mandatory photo consent", asyn
   assert.match(page, /Teilnahmevoraussetzung Foto/);
   assert.doesNotMatch(page, /Du kannst trotzdem an/);
 });
+
+test("the privacy notice identifies Sales Crew and JTI only", async () => {
+  const page = await readFile(new URL("app/page.tsx", root), "utf8");
+  const contracts = await readFile(new URL("lib/contracts.ts", root), "utf8");
+
+  assert.match(page, /Sales Crew Verkaufsförderung GmbH/);
+  assert.match(page, /Liebermannstraße A01\/303-6, 2345 Brunn am Gebirge/);
+  assert.match(page, /client@salescrew\.at/);
+  assert.match(page, /JTI Austria GmbH/);
+  assert.doesNotMatch(page, /Gastro Werbe|GWS|gws\.co\.at|datenschutz@merch\.at/);
+  assert.match(contracts, /2026-08-20\.1/);
+});
