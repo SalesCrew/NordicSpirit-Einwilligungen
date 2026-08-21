@@ -4,25 +4,57 @@ const DB_NAME = "frequency-consent-queue";
 const DB_VERSION = 1;
 const SUBMISSIONS = "submissions";
 const SETTINGS = "settings";
+const INDEXED_DB_TIMEOUT_MS = 15_000;
 
 function requestResult<T>(request: IDBRequest<T>) {
   return new Promise<T>((resolve, reject) => {
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error ?? new Error("IndexedDB request failed"));
+    const timeout = setTimeout(
+      () => reject(new Error("Lokaler Speicher antwortet nicht")),
+      INDEXED_DB_TIMEOUT_MS,
+    );
+    request.onsuccess = () => {
+      clearTimeout(timeout);
+      resolve(request.result);
+    };
+    request.onerror = () => {
+      clearTimeout(timeout);
+      reject(request.error ?? new Error("IndexedDB request failed"));
+    };
   });
 }
 
 function transactionDone(transaction: IDBTransaction) {
   return new Promise<void>((resolve, reject) => {
-    transaction.oncomplete = () => resolve();
-    transaction.onerror = () => reject(transaction.error ?? new Error("IndexedDB transaction failed"));
-    transaction.onabort = () => reject(transaction.error ?? new Error("IndexedDB transaction aborted"));
+    const timeout = setTimeout(() => {
+      try {
+        transaction.abort();
+      } catch {
+        // The transaction may have completed while the timeout was firing.
+      }
+      reject(new Error("Lokaler Speicher antwortet nicht"));
+    }, INDEXED_DB_TIMEOUT_MS);
+    transaction.oncomplete = () => {
+      clearTimeout(timeout);
+      resolve();
+    };
+    transaction.onerror = () => {
+      clearTimeout(timeout);
+      reject(transaction.error ?? new Error("IndexedDB transaction failed"));
+    };
+    transaction.onabort = () => {
+      clearTimeout(timeout);
+      reject(transaction.error ?? new Error("IndexedDB transaction aborted"));
+    };
   });
 }
 
 function openDatabase() {
   return new Promise<IDBDatabase>((resolve, reject) => {
     const request = indexedDB.open(DB_NAME, DB_VERSION);
+    const timeout = setTimeout(
+      () => reject(new Error("Lokaler Speicher konnte nicht geöffnet werden")),
+      INDEXED_DB_TIMEOUT_MS,
+    );
     request.onupgradeneeded = () => {
       const database = request.result;
       if (!database.objectStoreNames.contains(SUBMISSIONS)) {
@@ -34,8 +66,14 @@ function openDatabase() {
         database.createObjectStore(SETTINGS, { keyPath: "key" });
       }
     };
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error ?? new Error("IndexedDB could not be opened"));
+    request.onsuccess = () => {
+      clearTimeout(timeout);
+      resolve(request.result);
+    };
+    request.onerror = () => {
+      clearTimeout(timeout);
+      reject(request.error ?? new Error("IndexedDB could not be opened"));
+    };
   });
 }
 

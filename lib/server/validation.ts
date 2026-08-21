@@ -22,7 +22,7 @@ export async function parseSubmissionMetadata(value: unknown): Promise<Submissio
     !Number.isFinite(Date.parse(parsed.createdAtClient)) ||
     !nonEmpty(parsed.signedOn) ||
     !DATE_PATTERN.test(parsed.signedOn) ||
-    (parsed.photoChoiceHaftung !== "yes" && parsed.photoChoiceHaftung !== "no") ||
+    parsed.photoChoiceHaftung !== "yes" ||
     !nonEmpty(parsed.templateHaftungVersion) ||
     !nonEmpty(parsed.templateEinwilligungVersion) ||
     !nonEmpty(parsed.privacyNoticeVersion) ||

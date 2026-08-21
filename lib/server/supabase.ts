@@ -3,8 +3,13 @@ import type {
   SubmissionMetadata,
   SubmissionResult,
 } from "@/lib/contracts";
-import { ConfigurationError, getSupabaseConfig } from "@/lib/server/env";
+import { ConfigurationError, getServerEventId, getSupabaseConfig } from "@/lib/server/env";
 import { sha256 } from "@/lib/server/validation";
+
+const DOCX_MIME = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+const MAX_DOCUMENT_SIZE = 12 * 1024 * 1024;
+
+export type SubmissionDocumentKind = "haftung" | "einwilligung";
 
 export class SupabaseRequestError extends Error {
   constructor(
@@ -22,11 +27,15 @@ interface ConsentRow {
   synced_at: string;
   privacy_notice_version: string;
   privacy_acknowledged_at_client: string;
-  photo_choice_haftung: "yes" | "no";
+  photo_choice_haftung: "yes";
   haftung_path: string;
   einwilligung_path: string;
   haftung_sha256: string;
   einwilligung_sha256: string;
+}
+
+interface KioskDeviceRow {
+  device_id: string;
 }
 
 function encodeObjectPath(path: string) {
@@ -84,32 +93,59 @@ function rowToResult(row: ConsentRow): SubmissionResult {
   };
 }
 
+export async function registerKioskDevice(deviceId: string) {
+  const eventId = await getServerEventId();
+  const response = await requireSuccess(
+    await requestSupabase("/rest/v1/kiosk_devices?on_conflict=device_id&select=device_id", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Prefer: "resolution=merge-duplicates,return=representation",
+      },
+      body: JSON.stringify({
+        device_id: deviceId,
+        event_id: eventId,
+        active: true,
+        last_seen_at: new Date().toISOString(),
+      }),
+    }),
+    "Kiosk device registration",
+  );
+  const rows = (await response.json()) as KioskDeviceRow[];
+  if (rows[0]?.device_id !== deviceId) {
+    throw new SupabaseRequestError(502, "Kiosk device registration could not be verified");
+  }
+}
+
+export async function verifyRegisteredKioskDevice(deviceId: string) {
+  const eventId = await getServerEventId();
+  const query = new URLSearchParams({
+    device_id: `eq.${deviceId}`,
+    event_id: `eq.${eventId}`,
+    active: "eq.true",
+    select: "device_id",
+  });
+  const response = await requireSuccess(
+    await requestSupabase(`/rest/v1/kiosk_devices?${query.toString()}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Prefer: "return=representation",
+      },
+      body: JSON.stringify({ last_seen_at: new Date().toISOString() }),
+    }),
+    "Kiosk device verification",
+  );
+  const rows = (await response.json()) as KioskDeviceRow[];
+  return rows[0]?.device_id === deviceId;
+}
+
 function pathsFor(metadata: SubmissionMetadata) {
   const base = `${metadata.eventId}/${metadata.deviceId}/${metadata.id}`;
   return {
     haftungPath: `${base}/haftungsausschluss.docx`,
     einwilligungPath: `${base}/foto-video-entscheidung.docx`,
   };
-}
-
-async function createSignedUploadUrl(path: string) {
-  const { url, bucket } = await getSupabaseConfig();
-  const response = await requireSuccess(
-    await requestSupabase(`/storage/v1/object/upload/sign/${encodeURIComponent(bucket)}/${encodeObjectPath(path)}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-upsert": "true",
-      },
-      body: "{}",
-    }),
-    "Signed upload preparation",
-  );
-  const body = await response.json() as { url?: string };
-  if (!body.url) throw new SupabaseRequestError(502, "Supabase returned no signed upload URL");
-  if (/^https?:\/\//i.test(body.url)) return body.url;
-  if (body.url.startsWith("/storage/v1/")) return `${url}${body.url}`;
-  return `${url}/storage/v1/${body.url.replace(/^\//, "")}`;
 }
 
 async function downloadDocument(path: string) {
@@ -119,17 +155,20 @@ async function downloadDocument(path: string) {
     "Uploaded document verification",
   );
   const document = await response.blob();
-  if (document.size === 0 || document.size > 12 * 1024 * 1024) {
+  if (document.size === 0 || document.size > MAX_DOCUMENT_SIZE) {
     throw new SupabaseRequestError(422, "Uploaded document size is invalid");
   }
   return document;
 }
 
 function assertExistingMatches(existing: ConsentRow, metadata: SubmissionMetadata) {
+  const existingPrivacyTimestamp = Date.parse(existing.privacy_acknowledged_at_client);
+  const submittedPrivacyTimestamp = Date.parse(metadata.privacyAcknowledgedAtClient);
   if (
     existing.device_id !== metadata.deviceId ||
     existing.privacy_notice_version !== metadata.privacyNoticeVersion ||
-    existing.privacy_acknowledged_at_client !== metadata.privacyAcknowledgedAtClient ||
+    !Number.isFinite(existingPrivacyTimestamp) ||
+    existingPrivacyTimestamp !== submittedPrivacyTimestamp ||
     existing.photo_choice_haftung !== metadata.photoChoiceHaftung ||
     existing.haftung_sha256 !== metadata.haftungSha256 ||
     existing.einwilligung_sha256 !== metadata.einwilligungSha256
@@ -147,20 +186,44 @@ export async function prepareSubmission(
     return rowToResult(existing);
   }
   const { haftungPath, einwilligungPath } = pathsFor(metadata);
-  const { publishableKey } = await getSupabaseConfig();
-  const [haftungUploadUrl, einwilligungUploadUrl] = await Promise.all([
-    createSignedUploadUrl(haftungPath),
-    createSignedUploadUrl(einwilligungPath),
-  ]);
   return {
     status: "upload",
     id: metadata.id,
     haftungPath,
     einwilligungPath,
-    haftungUploadUrl,
-    einwilligungUploadUrl,
-    uploadApiKey: publishableKey,
+    haftungUploadUrl: `/api/submissions/${encodeURIComponent(metadata.id)}/documents/haftung`,
+    einwilligungUploadUrl: `/api/submissions/${encodeURIComponent(metadata.id)}/documents/einwilligung`,
   };
+}
+
+export async function uploadSubmissionDocument(
+  id: string,
+  deviceId: string,
+  kind: SubmissionDocumentKind,
+  document: Blob,
+) {
+  if (document.size === 0 || document.size > MAX_DOCUMENT_SIZE) {
+    throw new SupabaseRequestError(422, "Uploaded document size is invalid");
+  }
+  const eventId = await getServerEventId();
+  const filename = kind === "haftung"
+    ? "haftungsausschluss.docx"
+    : "foto-video-entscheidung.docx";
+  const path = `${eventId}/${deviceId}/${id}/${filename}`;
+  const { bucket } = await getSupabaseConfig();
+  await requireSuccess(
+    await requestSupabase(`/storage/v1/object/${encodeURIComponent(bucket)}/${encodeObjectPath(path)}`, {
+      method: "POST",
+      headers: {
+        "Cache-Control": "no-store",
+        "Content-Type": DOCX_MIME,
+        "x-upsert": "true",
+      },
+      body: await document.arrayBuffer(),
+    }),
+    "Document upload",
+  );
+  return path;
 }
 
 export async function completeSubmission(metadata: SubmissionMetadata): Promise<SubmissionResult> {

@@ -17,8 +17,27 @@ const sessionResponse = await fetch(`${appUrl}/api/device/session`, {
   body: JSON.stringify({ deviceId, setupCode: "test-code" }),
 });
 assert.equal(sessionResponse.status, 200);
-const cookie = sessionResponse.headers.get("set-cookie")?.split(";", 1)[0];
+let cookie = sessionResponse.headers.get("set-cookie")?.split(";", 1)[0];
 assert.ok(cookie, "setup response must set a kiosk cookie");
+
+const registeredSession = await fetch(`${appUrl}/api/device/session`, { headers: { cookie } });
+assert.equal(registeredSession.status, 200);
+assert.equal((await registeredSession.json()).configured, true);
+
+await fetch(`${mockUrl}/__devices/${deviceId}`, { method: "DELETE" });
+const staleSession = await fetch(`${appUrl}/api/device/session`, { headers: { cookie } });
+assert.equal(staleSession.status, 200);
+assert.equal((await staleSession.json()).configured, false);
+assert.match(staleSession.headers.get("set-cookie") || "", /Max-Age=0/);
+
+const reactivationResponse = await fetch(`${appUrl}/api/device/session`, {
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body: JSON.stringify({ deviceId, setupCode: "test-code" }),
+});
+assert.equal(reactivationResponse.status, 200);
+cookie = reactivationResponse.headers.get("set-cookie")?.split(";", 1)[0];
+assert.ok(cookie, "reactivation response must set a kiosk cookie");
 
 function metadataFor(haftungBytes, einwilligungBytes, recordId = id, photoChoice = "yes") {
   return {
@@ -29,7 +48,7 @@ function metadataFor(haftungBytes, einwilligungBytes, recordId = id, photoChoice
     signedOn: "2026-08-18",
     templateHaftungVersion: "2026-08-18",
     templateEinwilligungVersion: "2026-08-18",
-    privacyNoticeVersion: "2026-08-19",
+    privacyNoticeVersion: "2026-08-20.1",
     privacyAcknowledgedAtClient: "2026-08-19T12:00:00.000Z",
     photoChoiceHaftung: photoChoice,
     haftungSha256: hash(haftungBytes),
@@ -59,18 +78,26 @@ async function submit(haftungBytes, einwilligungBytes, recordId = id, photoChoic
       headers: { "content-type": "application/json" },
     });
   }
+  assert.equal(prepared.haftungUploadUrl.startsWith("/api/submissions/"), true);
+  assert.equal(prepared.einwilligungUploadUrl.startsWith("/api/submissions/"), true);
+  assert.equal("uploadApiKey" in prepared, false);
   const uploadHeaders = {
-    apikey: prepared.uploadApiKey,
-    "cache-control": "max-age=0",
+    cookie,
+    "cache-control": "no-store",
     "content-type": mime,
-    "x-upsert": "true",
   };
-  const [haftungUpload, einwilligungUpload] = await Promise.all([
-    fetch(prepared.haftungUploadUrl, { method: "PUT", headers: uploadHeaders, body: haftungBytes }),
-    fetch(prepared.einwilligungUploadUrl, { method: "PUT", headers: uploadHeaders, body: einwilligungBytes }),
-  ]);
-  assert.equal(haftungUpload.status, 200, await haftungUpload.clone().text());
-  assert.equal(einwilligungUpload.status, 200, await einwilligungUpload.clone().text());
+  const haftungUpload = await fetch(new URL(prepared.haftungUploadUrl, appUrl), {
+    method: "PUT",
+    headers: uploadHeaders,
+    body: haftungBytes,
+  });
+  const einwilligungUpload = await fetch(new URL(prepared.einwilligungUploadUrl, appUrl), {
+    method: "PUT",
+    headers: uploadHeaders,
+    body: einwilligungBytes,
+  });
+  assert.equal(haftungUpload.status, 201, await haftungUpload.clone().text());
+  assert.equal(einwilligungUpload.status, 201, await einwilligungUpload.clone().text());
   return post("/api/submissions/complete", metadata);
 }
 
@@ -92,20 +119,25 @@ assert.equal(duplicate.status, 201);
 const conflict = await submit(Buffer.from("different-docx-one"), Buffer.from("different-docx-two"));
 assert.equal(conflict.status, 409);
 
-const noConsentId = randomUUID();
-const noConsent = await submit(
-  Buffer.alloc(1_300_000, 51),
-  Buffer.alloc(400_000, 67),
-  noConsentId,
-  "no",
+const noConsent = await post(
+  "/api/submissions/prepare",
+  metadataFor(
+    Buffer.alloc(1_300_000, 51),
+    Buffer.alloc(400_000, 67),
+    randomUUID(),
+    "no",
+  ),
 );
-assert.equal(noConsent.status, 201, await noConsent.clone().text());
+assert.equal(noConsent.status, 400, await noConsent.clone().text());
 
 const state = await (await fetch(`${mockUrl}/__state`)).json();
-assert.equal(state.records.length, 2);
-assert.equal(state.records.find((record) => record.id === noConsentId)?.photo_choice_haftung, "no");
-assert.ok(state.records.every((record) => record.privacy_notice_version === "2026-08-19"));
-assert.equal(state.uploads.length, 4);
+assert.equal(state.devices.length, 1);
+assert.equal(state.devices[0].device_id, deviceId);
+assert.equal(state.devices[0].active, true);
+assert.equal(state.records.length, 1);
+assert.ok(state.records.every((record) => record.photo_choice_haftung === "yes"));
+assert.ok(state.records.every((record) => record.privacy_notice_version === "2026-08-20.1"));
+assert.equal(state.uploads.length, 2);
 assert.ok(state.uploads.every((upload) => upload.size > 0));
 
 process.stdout.write("backend integration: ok\n");
